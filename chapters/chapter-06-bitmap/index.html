@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 06 · Bitmap — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 06</div>
+    <span class="readout">CH·06a</span>
+    <h1>Bitmap</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Der Grundbaustein für die beiden Puzzles in diesem Kapitel: ein Bild laden
+      und in ein Raster aus Einzelteilen zerschneiden. Original:
+      <code>A3GPU206_Bitmap</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Loader/BitmapData → Image/drawImage</h2>
+      <p>
+        AS3 lädt externe Bilder asynchron mit <code>Loader</code> +
+        <code>URLRequest</code> und schneidet Ausschnitte mit
+        <code>BitmapData.copyPixels()</code> heraus. Im Browser übernimmt
+        <code>Image</code> das Laden (mit dem <code>load</code>-Event statt
+        <code>Event.COMPLETE</code>), und <code>drawImage()</code> mit den
+        neun-Parameter-Overload kann direkt einen Ausschnitt aus der Quelle in
+        ein Zielrechteck zeichnen — <strong>eine Funktion statt zwei Schritte</strong>.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>var loader:Loader = new Loader();
+loader.contentLoaderInfo
+  .addEventListener(
+    Event.COMPLETE, done);
+loader.load(
+  new URLRequest("bild.jpg"));
+
+function done(e:Event) {
+  var img:Bitmap =
+    Bitmap(e.target.loader
+      .content);
+  var piece = new BitmapData(
+    pw, ph);
+  piece.copyPixels(
+    img.bitmapData,
+    new Rectangle(x*pw,y*ph,pw,ph),
+    new Point(0,0));
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>const img = new Image();
+img.src = "bild.jpg";
+img.onload = () => {
+  ctx.drawImage(
+    img,
+    x*pw, y*ph, pw, ph,  // Quelle
+    dx, dy, pw, ph        // Ziel
+  );
+};</code></pre>
+        </div>
+      </div>
+
+      <h2>Warum das ein eigenes Mini-Kapitel ist</h2>
+      <p>
+        Sowohl das Jigsaw- als auch das Sliding-Puzzle bauen direkt auf diesem
+        Muster auf — ein Bild in <code>numPiecesHoriz × numPiecesVert</code>
+        Rechtecke zerlegen, jedes Teil als eigenständiges Objekt mit Position
+        behandeln. Wer dieses Beispiel versteht, versteht damit auch schon die
+        Kernidee beider folgenden Spiele.
+      </p>
+
+      <div class="callout">
+        Das Originalbild aus dem Buchmaterial (<code>testimage.jpg</code>) wird
+        unverändert verwendet — hier reicht ein einzelnes Standbild, kein
+        generiertes Ersatzbild nötig.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="460" height="350"></canvas>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-06-bitmap/game.js</span>
+        <span>460×350</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-05-airraid/">← Chapter 05 · Air Raid</a>
+  <a href="../chapter-06-jigsaw-puzzle/">Weiter: Chapter 06 · Jigsaw Puzzle →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

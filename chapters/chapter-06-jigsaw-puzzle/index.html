@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 06 · Jigsaw Puzzle — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 06</div>
+    <span class="readout">CH·06b</span>
+    <h1>Jigsaw Puzzle</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      48 Puzzleteile (8×6), zufällig verstreut. Das Interessante hier ist nicht
+      das Ziehen selbst, sondern dass richtig zusammengesetzte Teile sich ab
+      sofort <em>gemeinsam</em> bewegen. Original: <code>A3GPU206_JigsawPuzzle</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Der eigentliche Clou: verbundene Teile-Gruppen</h2>
+      <p>
+        <code>findLockedPieces()</code> prüft beim Anklicken eines Teils, welche
+        anderen Teile exakt in der richtigen relativen Position direkt daneben
+        liegen — und zieht sie automatisch mit. Das Original löst das mit einer
+        Liste, die nach Entfernung zum angeklickten Teil sortiert wird, und einer
+        Schleife, die so lange neue Verbindungen sucht, bis keine mehr dazukommt.
+        Dieser Algorithmus ist wortwörtlich derselbe in JavaScript — nur
+        <code>Array.sortOn()</code> wird zu <code>Array.sort()</code> mit eigener
+        Vergleichsfunktion.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>sortedObjects.sortOn(
+  "dist", Array.DESCENDING);
+
+do {
+  var found = false;
+  for (i=sortedObjects.length-1;
+       i&gt;=0; i--) {
+    // liegt n exakt neben
+    // dem angeklickten Teil?
+    if (piece.x == clicked.x
+        + pieceWidth*diffX) {
+      if (isConnected(n)) {
+        beingDragged.push(n);
+        found = true;
+      }
+    }
+  }
+} while (found);</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>candidates.sort(
+  (a,b) =&gt; b.dist - a.dist);
+
+let found = true;
+while (found) {
+  found = false;
+  for (let i = candidates
+       .length-1; i&gt;=0; i--) {
+    if (Math.abs(np.x - expX)
+        &lt; 0.5) {
+      if (isConnected(n)) {
+        beingDragged.push(n);
+        found = true;
+      }
+    }
+  }
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Kein festes Ziel-Board — relative Position zählt</h2>
+      <p>
+        Auffällig: das Original prüft <em>nicht</em>, ob die Teile an einer
+        bestimmten Bildschirmposition liegen, sondern nur, ob sie
+        <strong>zueinander</strong> richtig positioniert sind
+        (<code>puzzleTogether()</code> vergleicht nur Differenzen). Man kann das
+        Puzzle also irgendwo auf der Fläche zusammensetzen — das habe ich 1:1
+        übernommen.
+      </p>
+
+      <h2>10-Pixel-Raster als Toleranz</h2>
+      <p>
+        Nach jedem Loslassen werden alle Teile auf das nächste Vielfache von
+        10 Pixeln gerundet (<code>lockPiecesToGrid()</code>). Das macht exaktes
+        Zusammensetzen per Maus überhaupt erst praktikabel — ohne dieses Raster
+        müsste man pixelgenau treffen.
+      </p>
+
+      <div class="callout">
+        Teil anklicken und ziehen — bereits richtig verbundene Nachbarn werden
+        automatisch mitgezogen. Das Originalbild aus dem Buchmaterial wird
+        unverändert verwendet.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="520" height="380" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">48 Teile, kein festes Board — nur relative Position zählt.</p>
+          <button id="start-btn" class="btn">Puzzle mischen</button>
+        </div>
+      </div>
+      <p id="hint" class="controls-hint">Teil ziehen, um es zu bewegen — verbundene Nachbarn kommen automatisch mit.</p>
+      <div class="stage-caption">
+        <span>chapter-06-jigsaw-puzzle/game.js</span>
+        <span>520×380</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-06-bitmap/">← Chapter 06 · Bitmap</a>
+  <a href="../chapter-06-sliding-puzzle/">Weiter: Chapter 06 · Sliding Puzzle →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
