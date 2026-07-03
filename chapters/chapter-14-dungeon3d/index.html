@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 14 · Dungeon 3D — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 14</div>
+    <span class="readout">CH·14b</span>
+    <h1>Dungeon 3D</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein waschechter First-Person-Walker: frei drehen, vor/zurück laufen,
+      Münzen einsammeln, Hindernissen ausweichen. Original:
+      <code>A3GPU214_Dungeon3D</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Von Flashs 3D-Engine zur Kamera-Matrix von Hand</h2>
+      <p>
+        Das Original bewegt nicht den Spieler, sondern die <em>Welt</em> in
+        die Gegenrichtung (<code>worldSprite.x = -newX</code>) und dreht die
+        Kamera über <code>viewSprite.rotationY</code> — Flash übernimmt den
+        Rest automatisch. Ohne diese Engine rechnet
+        <code>project()</code> jeden Weltpunkt explizit in
+        Kamera-Koordinaten um (Verschiebung relativ zur Kameraposition,
+        dann Rotation um den Blickwinkel), bevor die Formel aus
+        Chapter 14a die eigentliche Perspektive anwendet.
+      </p>
+
+      <h2>"Squares" sind Hindernisse, keine Räume</h2>
+      <p>
+        Ein Detail, das beim ersten Lesen des Originals leicht übersehen
+        wird: <code>Square</code>-Objekte sind keine begehbaren Zimmer,
+        sondern solide Blöcke — für jeden wird per <code>addWall()</code>
+        an allen vier Kanten eine Wand erzeugt. Der Spieler bewegt sich frei
+        im offenen Raum <em>zwischen</em> diesen Blöcken. Das macht
+        Dungeon 3D strukturell näher an Top-Down Game aus Kapitel 12 (dieselbe
+        Rechteck-Kollision!) als an ein klassisches Wand-Labyrinth.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>if (object is Square) {
+  addWall(object.x+object.width/2,
+    object.y, object.width, 0);
+  addWall(object.x,
+    object.y+object.height/2,
+    object.height, 90);
+  // ... zwei weitere Kanten
+  squares.push(object);
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>blocks.forEach(b =&gt; {
+  quads.push(wallQuad(
+    b.x, b.z, b.x+b.w, b.z));
+  quads.push(wallQuad(
+    b.x+b.w, b.z,
+    b.x+b.w, b.z+b.d));
+  // ... zwei weitere Kanten
+});</code></pre>
+        </div>
+      </div>
+
+      <h2>Tiefensortierung: Painter's Algorithm statt Matrix-Abfrage</h2>
+      <p>
+        <code>zSort()</code> im Original fragt für jedes Objekt die
+        tatsächliche 3D-Tiefe über <code>getRelativeMatrix3D()</code> ab und
+        sortiert danach, damit nahe Objekte richtig vor fernen gezeichnet
+        werden. Hier reicht ein einfacher Vergleich der berechneten
+        Kamera-Tiefe (<code>depth</code>) — dasselbe Ziel, ohne Matrix-API.
+      </p>
+
+      <div class="callout">
+        <kbd>←</kbd>/<kbd>→</kbd> drehen, <kbd>↑</kbd>/<kbd>↓</kbd> laufen.
+        Alle Münzen einsammeln, um zu gewinnen.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="550" height="380" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Frei umherlaufen, alle Münzen finden, Blöcken ausweichen.</p>
+          <button id="start-btn" class="btn">Erkundung starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-coins">Münzen: 0 / 5</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-14-dungeon3d/game.js</span>
+        <span>550×380</span>
+      </div>
+      <p class="controls-hint"><kbd>←</kbd> <kbd>→</kbd> drehen · <kbd>↑</kbd> <kbd>↓</kbd> laufen</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-14-demos/">← Chapter 14 · 3D Demos</a>
+  <a href="../chapter-14-racing3d/">Weiter: Chapter 14 · Racing 3D →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 14 · Target Practice — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 14</div>
+    <span class="readout">CH·14d</span>
+    <h1>Target Practice</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Eine Kanone verschiebt sich seitlich und ändert den Abschusswinkel,
+      eine Kugel fliegt mit echter Schwerkraft durch den 3D-Raum, ein
+      zufällig platziertes Ziel will getroffen werden. Original:
+      <code>A3GPU214_TargetPractice</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Dieselbe Projektion, jetzt bewegt sich das Objekt statt der Kamera</h2>
+      <p>
+        Dungeon 3D und Racing 3D bewegen die Kamera durch eine stehende
+        Welt. Target Practice dreht das um: die Kamera steht fest, dafür
+        fliegt der Ball. <code>project()</code> aus Chapter 14a kümmert sich
+        um beides gleich gut — die Funktion kennt nur "Weltpunkt rein,
+        Bildschirmpunkt raus", unabhängig davon, was sich bewegt.
+      </p>
+
+      <h2>Schwerkraft in drei Dimensionen</h2>
+      <p>
+        <code>ball.y</code> (Höhe) und <code>ball.z</code> (Distanz) ändern
+        sich unabhängig — <code>dy</code> wächst durch Schwerkraft, <code>dz</code>
+        bleibt konstant (keine Luftreibung). Das ist exakt dieselbe
+        Wurfparabel-Physik wie bei Balloon Pop (Kapitel 07), nur in der
+        dritten Dimension statt nur in 2D.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3 (pro Frame)</span>
+          <pre><code>ball.y += dy;
+ball.z += dz;
+ballShadow.z += dz;
+dy += .1; // Schwerkraft</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript (zeitbasiert skaliert)</span>
+          <pre><code>const steps = dt * 60;
+ball.y += ball.dy * steps;
+ball.z += ball.dz * steps;
+ball.dy += 0.1 * steps;</code></pre>
+        </div>
+      </div>
+      <p>
+        Da das Original von einer festen Bildrate ausging (Pro-Frame-Delta),
+        wird hier mit <code>dt*60</code> hochskaliert — bei 60 fps
+        entspricht ein Frame genau <code>dt=1/60</code>, also
+        <code>steps=1</code>, exakt wie im Original. Bei jeder anderen
+        Bildrate bleibt die Flugbahn dank Zeitbasierung trotzdem gleich schnell.
+      </p>
+
+      <h2>Kanonenringe als Flugbahn-Vorschau</h2>
+      <p>
+        Die zehn Ringe, die den Zielwinkel visualisieren, benutzen exakt
+        dieselbe <code>sin</code>/<code>cos</code>-Formel wie die
+        tatsächliche Flugbahn — sie sind im Grunde ein "Standbild" der
+        ersten zehn Bewegungsschritte, unverändert aus dem Original
+        übernommen.
+      </p>
+
+      <div class="callout">
+        <kbd>←</kbd>/<kbd>→</kbd> Kanone verschieben, <kbd>↑</kbd>/<kbd>↓</kbd>
+        Winkel ändern, <kbd>Leertaste</kbd> feuert. Treffer innerhalb von
+        50 Einheiten vom Ziel zählen.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="550" height="380" tabindex="0"></canvas>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Treffer: 0 / 0</span>
+        <span id="hint">Winkel: 30°</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-14-targetpractice/game.js</span>
+        <span>550×380</span>
+      </div>
+      <p class="controls-hint"><kbd>←</kbd> <kbd>→</kbd> Kanone · <kbd>↑</kbd> <kbd>↓</kbd> Winkel · <kbd>Space</kbd> feuert</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-14-racing3d/">← Chapter 14 · Racing 3D</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

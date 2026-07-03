@@ -66,7 +66,7 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 | 11 | Platform Game | ✅ portiert |
 | 12 | Racing Game / Top-Down Game | ✅ portiert |
 | 13 | Blackjack / Higher or Lower / Video Poker | ✅ portiert |
-| 14 | 3D-Demos / Dungeon 3D / Racing 3D / Target Practice | ⏳ geplant |
+| 14 | 3D-Demos / Dungeon 3D / Racing 3D / Target Practice | ✅ portiert |
 | 15 | Apps | ⏳ geplant |
 
 Der aktuelle Stand steht auch live oben auf der [Übersichtsseite](./index.html)

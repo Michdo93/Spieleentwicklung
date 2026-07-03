@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 14 · 3D Demos — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 14</div>
+    <span class="readout">CH·14a</span>
+    <h1>3D Demos</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Die Grundlagen für den Rest des Kapitels: Flash Players eingebaute
+      "native 3D"-Eigenschaften (<code>z</code>, <code>rotationX/Y/Z</code>)
+      und wie man ihre Wirkung ohne diese Engine von Hand nachrechnet.
+      Original: <code>A3GPU214_Demos</code> (demo1–demo4).
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Was Flash automatisch erledigt hat</h2>
+      <p>
+        Ab Flash 10 hatte jedes <code>DisplayObject</code> eingebaute
+        3D-Eigenschaften: <code>z</code> (Tiefe), <code>rotationX</code>,
+        <code>rotationY</code>, <code>rotationZ</code>. Der Player
+        berechnete Perspektive und Verdeckung automatisch — man musste nur
+        die Werte setzen. Canvas hat dafür keine Entsprechung: Wir müssen
+        die Perspektiven-Projektion selbst rechnen.
+      </p>
+
+      <h2>Die eine Formel für dieses ganze Kapitel</h2>
+      <p>
+        Das Grundprinzip der Zentralprojektion — je weiter weg (größeres
+        <code>z</code>), desto kleiner und näher am Fluchtpunkt — lässt sich
+        mit einer einzigen Formel ausdrücken. Diese Formel taucht in allen
+        vier Unterkapiteln von Chapter 14 wieder auf.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3 (automatisch)</span>
+          <pre><code>square2.x = 275;
+square2.y = 200;
+square2.z = 100; // Flash Player
+  // übernimmt den Rest</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript (von Hand)</span>
+          <pre><code>function project(x, y, z) {
+  const scale =
+    FOCAL / (FOCAL + z);
+  return {
+    x: x, y: y, scale
+  };
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>rotationX/Y/Z ohne echte 3D-Engine</h2>
+      <p>
+        Ohne WebGL lässt sich eine echte Flächendrehung im Raum auf einem
+        2D-Canvas nicht exakt nachbilden. Die Demos hier nähern das Kippen
+        um die X-/Y-Achse als einfache Stauchung an (<code>cos(winkel)</code>
+        als Höhen- bzw. Breitenfaktor) — visuell überzeugend genug, um das
+        Prinzip zu zeigen, aber bewusst eine Vereinfachung. Rotation um die
+        Z-Achse braucht dagegen gar keinen Trick — das ist stinknormale
+        2D-Rotation, die <code>ctx.rotate()</code> exakt kann.
+      </p>
+
+      <div class="callout">
+        Vier Tabs: reine Tiefe (<code>z</code>), Kippen um 30°/60°, volle
+        90°-Kippung (wie ein Boden), und alle drei Rotationsachsen gleichzeitig
+        animiert.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="demo-buttons">
+        <button class="btn ghost btn-active" data-demo="demo1">1 · z</button>
+        <button class="btn ghost" data-demo="demo2">2 · rotationX (leicht)</button>
+        <button class="btn ghost" data-demo="demo3">3 · rotationX (90°)</button>
+        <button class="btn ghost" data-demo="demo4">4 · X/Y/Z animiert</button>
+      </div>
+      <div class="stage-frame">
+        <canvas id="stage" width="500" height="320"></canvas>
+      </div>
+      <p id="hint" class="controls-hint"></p>
+      <div class="stage-caption">
+        <span>chapter-14-demos/game.js</span>
+        <span>500×320</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-13-videopoker/">← Chapter 13 · Video Poker</a>
+  <a href="../chapter-14-dungeon3d/">Weiter: Chapter 14 · Dungeon 3D →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
