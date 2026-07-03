@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 08 · Collapsing Blocks — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 08</div>
+    <span class="readout">CH·08b</span>
+    <h1>Collapsing Blocks</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Das "SameGame"-Prinzip: verbundene Blöcke gleicher Farbe anklicken, sie
+      verschwinden, der Rest rutscht nach. Original:
+      <code>A3GPU208_CollapsingBlocks</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Flood-Fill: eine der nützlichsten Spiele-Techniken überhaupt</h2>
+      <p>
+        <code>testBlock()</code> ist eine rekursive Flood-Fill-Suche: vom
+        angeklickten Block aus in alle vier Richtungen weiterspringen, solange
+        der Nachbar denselben Typ hat. Dieselbe Technik steckt hinter dem
+        Fülleimer-Werkzeug in Bildbearbeitungsprogrammen, hinter Minesweepers
+        "leere Fläche aufdecken" und vielen Rätselspielen.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>function testBlock(col,row,type) {
+  var testList = [];
+  if (getBlockType(col,row)
+      == 0) return testList;
+  if (blocks[col][row].type
+      == type) {
+    testList.push(
+      blocks[col][row]);
+    blocks[col][row].type = 0; // als besucht markieren
+    testList = testList.concat(
+      testBlock(col+1,row,type));
+    testList = testList.concat(
+      testBlock(col-1,row,type));
+    // ... row+1, row-1
+  }
+  return testList;
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>testBlock(col, row, type, visited) {
+  const key = col+","+row;
+  if (visited.has(key)) return [];
+  if (this.getBlockType(col,row)
+      !== type) return [];
+  visited.add(key); // als besucht markieren
+  let list = [this.blocks[col][row]];
+  list = list.concat(
+    this.testBlock(col+1,row,type,visited));
+  list = list.concat(
+    this.testBlock(col-1,row,type,visited));
+  // ... row+1, row-1
+  return list;
+}</code></pre>
+        </div>
+      </div>
+      <p>
+        Kleine, aber wichtige Änderung: Das Original markiert besuchte Blöcke,
+        indem es kurzzeitig <code>type = 0</code> setzt und bei einem
+        Fehlversuch (weniger als zwei Treffer) wieder zurücksetzt. Ich benutze
+        stattdessen ein separates <code>visited</code>-Set pro Klick — funktional
+        gleichwertig, aber ohne Nebenwirkung, falls beim Zurücksetzen mal ein
+        Fall übersehen würde.
+      </p>
+
+      <h2>Nachrutschen in zwei Phasen</h2>
+      <p>
+        Erst fallen die Blöcke einer Spalte nach unten (<code>affectAbove()</code>
+        aktualisiert nur die Zieldaten, die eigentliche Bewegung passiert im
+        Game-Loop), dann — sobald alles zur Ruhe gekommen ist — rutschen leere
+        Spalten von links zusammen (<code>checkForEmptyColumns()</code>).
+        Diese zwei-Phasen-Reihenfolge ist 1:1 aus dem Original übernommen.
+      </p>
+
+      <div class="callout">
+        Zwei oder mehr verbundene, gleichfarbige Blöcke anklicken, damit sie
+        verschwinden. Punkte = Anzahl Blöcke im Quadrat.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="480" height="360" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Verbundene Blöcke gleicher Farbe anklicken.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Score: 0</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-08-collapsingblocks/game.js</span>
+        <span>480×360</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-08-pointburst/">← Chapter 08 · Point Burst</a>
+  <a href="../chapter-08-matchthree/">Weiter: Chapter 08 · Match Three →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 08 · Point Burst — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 08</div>
+    <span class="readout">CH·08a</span>
+    <h1>Point Burst</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Eine kleine, wiederverwendbare Komponente: Punktezahl an einer Position
+      einblenden, während sie größer wird und ausblendet. Original:
+      <code>A3GPU208_PointBurst</code> — wird danach in Collapsing Blocks und
+      Match Three wiederverwendet.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Eine sich selbst verwaltende Komponente</h2>
+      <p>
+        Das Interessante an <code>PointBurst.as</code> ist, dass es sich nach
+        der Animation <strong>selbst wieder entfernt</strong> — der Aufrufer
+        muss sich um nichts weiter kümmern. Im Original per <code>Timer</code>
+        mit fester Schrittzahl, hier als Objekt mit <code>done</code>-Flag,
+        das die aufrufende Schleife aus einer Liste entfernt.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>animTimer = new Timer(
+  animStepTime, animSteps);
+animTimer.addEventListener(
+  TimerEvent.TIMER,
+  rescaleBurst);
+animTimer.addEventListener(
+  TimerEvent.TIMER_COMPLETE,
+  removeBurst);
+animTimer.start();
+
+function rescaleBurst(e) {
+  var p = e.target.currentCount
+    /animSteps;
+  scaleX = scaleY =
+    (1-p)*startScale
+    + p*endScale;
+  alpha = 1-p;
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>update(now) {
+  const p = Math.min(
+    (now-this.start)/animTime,
+    1);
+  this.scale =
+    (1-p)*startScale
+    + p*endScale;
+  this.alpha = 1-p;
+  if (p &gt;= 1) this.done = true;
+}
+
+// im Game-Loop:
+bursts.forEach(b =&gt; b.update(now));
+bursts = bursts.filter(
+  b =&gt; !b.done);</code></pre>
+        </div>
+      </div>
+
+      <h2>Aufruf bleibt denkbar einfach</h2>
+      <p>
+        Genau wie im Original reicht ein Konstruktoraufruf mit Punktezahl und
+        Position — die Komponente kümmert sich um den Rest. Die beiden
+        nächsten Kapitel-Unterseiten (Collapsing Blocks, Match Three) rufen
+        diese Komponente an der Stelle auf, an der Original-Code
+        <code>new PointBurst(this, pointsScored, mouseX, mouseY)</code> schreibt.
+      </p>
+
+      <div class="callout">
+        Irgendwo in den Kasten klicken — jeder Klick erzeugt eine unabhängige
+        PointBurst-Instanz mit zufälliger Punktezahl.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="480" height="280" tabindex="0"></canvas>
+      </div>
+      <p id="hint" class="controls-hint"></p>
+      <div class="stage-caption">
+        <span>chapter-08-pointburst/game.js</span>
+        <span>480×280</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-07-spacerocks/">← Chapter 07 · Space Rocks</a>
+  <a href="../chapter-08-collapsingblocks/">Weiter: Chapter 08 · Collapsing Blocks →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

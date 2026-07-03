@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 08 · Match Three — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 08</div>
+    <span class="readout">CH·08c</span>
+    <h1>Match Three</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein Bejeweled-Klon: zwei angrenzende Teile tauschen, um Dreier-Reihen zu
+      bilden. Das komplexeste Spiel in diesem Kapitel — mit Ketten-Reaktionen,
+      garantiert lösbarem Startraster und Rückgängig-Tausch bei Fehlversuchen.
+      Original: <code>A3GPU208_MatchThree</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>"Ausprobieren, dann entscheiden"-Muster</h2>
+      <p>
+        <code>makeSwap()</code> ist ein hübscher Trick: statt vorher zu prüfen,
+        ob ein Tausch ein Match ergibt, wird einfach getauscht und danach
+        <code>lookForMatches()</code> aufgerufen. Kein Treffer? Zurücktauschen.
+        Das spart eine komplett separate "Was-wäre-wenn"-Prüffunktion.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>function makeSwap(p1,p2) {
+  swapPieces(p1,p2);
+  if (lookForMatches().length
+      == 0) {
+    swapPieces(p1,p2); // zurück
+  } else {
+    isSwapping = true;
+  }
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>makeSwap(p1, p2) {
+  this.swapPieces(p1, p2);
+  if (this.lookForMatches()
+      .length === 0) {
+    this.swapPieces(p1, p2);
+  } else {
+    this.isSwapping = true;
+  }
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Startraster: erst mischen, dann prüfen, ggf. neu mischen</h2>
+      <p>
+        Ein zufälliges 8×8-Raster hätte oft schon von Anfang an Dreier-Reihen
+        (unerwünscht) oder gar keine möglichen Züge (Sackgasse). Das Original
+        löst das simpel: Raster erzeugen, mit <code>lookForMatches()</code> und
+        <code>lookForPossibles()</code> prüfen, bei Bedarf komplett neu würfeln
+        — so lange, bis ein gültiges Startraster gefunden ist.
+      </p>
+
+      <h2>Mögliche-Züge-Erkennung ohne Ausprobieren</h2>
+      <p>
+        Statt für jeden der 64 Felder alle vier Nachbartausche tatsächlich
+        durchzuspielen, prüft <code>lookForPossibles()</code> geometrische
+        Muster ("zwei gleiche in einer Reihe plus ein potenzieller dritter
+        einen Zug entfernt") — deutlich schneller. Die Musterlisten (relative
+        Koordinaten) sind 1:1 aus dem Original übernommen.
+      </p>
+
+      <h2>Ketten-Reaktionen fast geschenkt</h2>
+      <p>
+        Weil <code>findAndRemoveMatches()</code> nach dem Nachrutschen erneut
+        sich selbst über den Game-Loop auslöst (<code>isDropping</code>-Flag),
+        entstehen Kettenreaktionen automatisch — ohne eigene Rekursionslogik
+        dafür schreiben zu müssen.
+      </p>
+
+      <div class="callout">
+        Ein Teil anklicken, dann ein direkt angrenzendes zweites — ergibt der
+        Tausch eine Dreier-Reihe, bleibt er bestehen, sonst tauscht das Spiel
+        automatisch zurück.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="400" height="400" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Zwei angrenzende Teile tauschen, um Dreier-Reihen zu bilden.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Score: 0</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-08-matchthree/game.js</span>
+        <span>400×400</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-08-collapsingblocks/">← Chapter 08 · Collapsing Blocks</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
