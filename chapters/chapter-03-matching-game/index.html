@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 03 · Matching Game — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 03</div>
+    <span class="readout">CH·03</span>
+    <h1>Matching Game</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Das klassische Memory-Kartenspiel: 36 Karten, 18 Paare, aufdecken und
+      merken. Das Buch baut dieses Spiel im Original in <strong>zehn Schritten</strong>
+      auf (<code>MatchingGame1</code> … <code>MatchingGame10</code>) — wir portieren
+      direkt die fertige Fassung <code>MatchingGameObject10</code> + <code>Card10</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Warum "Version 10" statt "Version 1"?</h2>
+      <p>
+        Das Buch nutzt hier bewusst eine Schritt-für-Schritt-Methode: Version 1
+        zeigt nur das Grundraster, Version 2 fügt Klick-Erkennung hinzu, Version 5
+        die Flip-Animation, Version 8 Sound, Version 10 Highscore und Timer. Didaktisch
+        wertvoll beim Lesen des Buchs — für die Portierung reicht es, die letzte,
+        vollständige Version 1:1 zu übertragen; die Lernschritte stehen weiter unten
+        als Kurzfassung.
+      </p>
+
+      <h2>Die Flip-Animation: scaleX statt echtem 3D</h2>
+      <p>
+        <code>Card10.as</code> simuliert eine Kartendrehung, indem es
+        <code>scaleX</code> in zehn Schritten von 1 auf 0 und wieder auf 1 fährt —
+        in der Mitte (bei <code>scaleX = 0</code>) wechselt die sichtbare Kartenseite.
+        Genau dasselbe Prinzip funktioniert im Canvas mit <code>ctx.scale()</code>,
+        nur zeitbasiert statt frame-gezählt.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>function flip(e:Event) {
+  flipStep--;
+  if (flipStep &gt; 5) {
+    scaleX = .2*(flipStep-6);
+  } else {
+    scaleX = .2*(5-flipStep);
+  }
+  if (flipStep == 5) {
+    gotoAndStop(flipToFrame);
+  }
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>update(dt) {
+  this.flipT += dt / 260;
+  if (this.flipT &gt;= 0.5) {
+    this.faceUp = this.pendingFaceUp;
+  }
+}
+// zum Zeichnen:
+const s = Math.abs(
+  Math.cos(flipT * Math.PI)
+);
+ctx.scale(s, 1);</code></pre>
+        </div>
+      </div>
+
+      <h2>Kartenbilder: eigene Symbole statt Bibliothek</h2>
+      <p>
+        Im Original waren die 18 Kartenmotive einzelne Frames im
+        <code>Card10</code>-Bibliothekssymbol (von Hand gezeichnete Bilder).
+        Ohne Flash-Bibliothek generiere ich stattdessen 18 eindeutige
+        Symbol/Farb-Kombinationen (6 Formen × 3 Farben) direkt mit der
+        Canvas-API — funktional identisch: 18 klar unterscheidbare Motive.
+      </p>
+
+      <h2>Spiellogik: derselbe Zustandsautomat</h2>
+      <p>
+        Der Kern von <code>clickCard()</code> ist eine kleine Zustandsmaschine —
+        "keine Karte gewählt" → "eine Karte gewählt" → "zwei Karten, vergleichen" —
+        die 1:1 übernommen wurde, inklusive des Sonderfalls, dieselbe Karte zweimal
+        anzuklicken (schließt sie wieder).
+      </p>
+
+      <div class="callout">
+        Sounds sind die Original-Audiodateien aus dem Buch (<code>FirstCardSound</code>,
+        <code>MissSound</code>, <code>MatchSound</code>), von AIFF nach MP3 konvertiert —
+        AIFF spielt in den meisten Browsern nicht zuverlässig ab.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="420" height="420" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">6×6 Karten, 18 Paare. Wie schnell findest du alle?</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Score: 0</span>
+        <span id="hud-time">Time: 0:00</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-03-matching-game/game.js</span>
+        <span>420×420</span>
+      </div>
+      <p class="controls-hint">Karten anklicken, um sie umzudrehen.</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-02-game-elements/">← Chapter 02 · Game Elements</a>
+  <a href="../chapter-04-deduction/">Weiter: Chapter 04 · Deduction →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 04 · Memory Game — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 04</div>
+    <span class="readout">CH·04b</span>
+    <h1>Memory Game</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein "Simon"-Klon: Der Computer spielt eine wachsende Ton-/Licht-Sequenz vor,
+      der Spieler wiederholt sie. Ein Fehler beendet das Spiel. Original:
+      <code>A3GPU204_MemoryGame</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Verketteter Timer statt Schleife</h2>
+      <p>
+        Interessant an <code>MemoryGame.as</code> ist, wie die Sequenz abgespielt
+        wird: <em>nicht</em> mit einer <code>for</code>-Schleife (die würde alle
+        Lichter gleichzeitig zeigen), sondern mit einem <code>Timer</code>, der pro
+        Tick einen Schritt weiterspringt. Das JS-Äquivalent ist eine Kette von
+        <code>setTimeout()</code>-Aufrufen, bei der jeder Aufruf den nächsten
+        selbst plant — dasselbe Grundprinzip.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>lightTimer = new Timer(
+  1000, playOrder.length+1);
+lightTimer.addEventListener(
+  TimerEvent.TIMER,
+  lightSequence);
+lightTimer.start();
+
+function lightSequence(e) {
+  var step =
+    e.currentTarget
+     .currentCount-1;
+  if (step &lt; playOrder.length) {
+    lightOn(playOrder[step]);
+  } else {
+    startPlayerRepeat();
+  }
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>playSequence(step) {
+  if (step &gt;= this.playOrder
+      .length) {
+    this.startPlayerRepeat();
+    return;
+  }
+  this.lightOn(
+    this.playOrder[step]);
+  setTimeout(
+    () =&gt; this.playSequence(
+      step + 1),
+    700
+  );
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Sequenz merken: ein einfacher Array-Vergleich</h2>
+      <p>
+        Die eigentliche Spiellogik ist erfreulich simpel: <code>repeatOrder</code>
+        ist eine Kopie der bisherigen Sequenz, bei jedem Klick wird das erste
+        Element mit <code>shift()</code> entnommen und verglichen. Stimmt es nicht
+        überein, ist das Spiel vorbei — dieselbe Methode existiert unverändert in
+        JavaScript-Arrays.
+      </p>
+
+      <h2>Sounds: fünf Töne, ein Sample pro Licht</h2>
+      <p>
+        Die fünf <code>note1.mp3</code> … <code>note5.mp3</code>-Dateien aus dem
+        Originalmaterial werden unverändert übernommen — jedes Licht bekommt seinen
+        eigenen Ton, genau wie im Buch.
+      </p>
+
+      <div class="callout">
+        Steuerung: einfach auf die Kreise klicken, während "Jetzt du" angezeigt wird.
+        Die Sequenz wird bei jeder erfolgreichen Runde um ein Element länger.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="450" height="260" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Zuschauen, zuhören, wiederholen. Wie lang wird deine Sequenz?</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <p id="message"></p>
+      <p id="score"></p>
+      <div class="stage-caption">
+        <span>chapter-04-memory-game/game.js</span>
+        <span>450×260</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-04-deduction/">← Chapter 04 · Deduction</a>
+  <a href="../chapter-05-airraid/">Weiter: Chapter 05 · Air Raid →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

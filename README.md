@@ -54,8 +54,8 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 |---|---------|--------|
 | 01 | Hello World | ✅ portiert |
 | 02 | Game Elements | ✅ portiert |
-| 03 | Matching Game | ⏳ geplant |
-| 04 | Deduction / Memory Game | ⏳ geplant |
+| 03 | Matching Game | ✅ portiert |
+| 04 | Deduction / Memory Game | ✅ portiert |
 | 05 | Air Raid | ✅ portiert |
 | 05 | Animation / Paddle Ball | ⏳ geplant |
 | 06 | Bitmap / Jigsaw / Sliding Puzzle | ⏳ geplant |

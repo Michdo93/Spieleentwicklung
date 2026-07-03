@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 04 · Deduction — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 04</div>
+    <span class="readout">CH·04a</span>
+    <h1>Deduction</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein Mastermind-Klon: 5 farbige Stifte erraten, 10 Versuche, nach jeder
+      Reihe Feedback über richtige Position und richtige Farbe.
+      Original: <code>A3GPU204_Deduction</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Reines Logikspiel, kein Timing</h2>
+      <p>
+        Anders als Air Raid oder das Matching Game läuft hier nichts von selbst —
+        das ganze Spiel besteht aus Klick-Reaktionen. Das ist ein guter Kontrast:
+        kein <code>ENTER_FRAME</code>/<code>requestAnimationFrame</code>-Loop nötig,
+        nur Event-Handler.
+      </p>
+
+      <h2>Der Auswertungs-Algorithmus</h2>
+      <p>
+        Der interessante Teil ist <code>calculateProgress()</code>: "richtige Farbe,
+        falsche Stelle" zu zählen ist ein klassisches Zähl-Problem. Der Trick im
+        Original — für jede Farbe zählen, wie oft sie <em>übrig</em> (nicht exakt
+        getroffen) in Lösung und Rateversuch vorkommt, dann das Minimum beider
+        Zahlen aufsummieren — funktioniert unverändert in JavaScript:
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>for(i=0;i&lt;numPegs;i++) {
+  if (currentRow[i].color
+      == solution[i]) {
+    numCorrectSpot++;
+  } else {
+    solutionColorList[
+      solution[i]-1]++;
+    currentColorList[
+      currentRow[i].color-1]++;
+  }
+}
+for(i=0;i&lt;numColors;i++) {
+  numCorrectColor += Math.min(
+    solutionColorList[i],
+    currentColorList[i]);
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>for (let i=0; i&lt;numPegs; i++) {
+  if (currentRow[i] ===
+      solution[i]) {
+    correctSpot++;
+  } else {
+    solutionColorList[
+      solution[i]-1]++;
+    currentColorList[
+      currentRow[i]-1]++;
+  }
+}
+for (let i=0; i&lt;numColors; i++) {
+  correctColor += Math.min(
+    solutionColorList[i],
+    currentColorList[i]);
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>UI ohne TextField/Button-Symbole</h2>
+      <p>
+        Der DONE-Button und die Farbstifte waren im Original eigene
+        Bibliothekssymbole mit Klick-Erkennung. Auf dem Canvas gibt es keine
+        eingebauten interaktiven Elemente — ein Klick auf die Bühne wird per
+        Koordinaten-Test der passenden Schaltfläche zugeordnet (derselbe
+        Rechtecktest wie in Kapitel 02, Demo 7 "Kollision").
+      </p>
+
+      <div class="callout">
+        Farbstift anklicken schaltet seine Farbe weiter (leer → 5 Farben → leer),
+        genau wie im Original. <code>●</code> zeigt "richtige Stelle",
+        <code>○</code> zeigt "richtige Farbe, falsche Stelle".
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="380" height="420" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">5 Farben, 10 Versuche. Finde die geheime Kombination.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <p id="message"></p>
+      <div class="stage-caption">
+        <span>chapter-04-deduction/game.js</span>
+        <span>380×420</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-03-matching-game/">← Chapter 03 · Matching Game</a>
+  <a href="../chapter-04-memory-game/">Weiter: Chapter 04 · Memory Game →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
