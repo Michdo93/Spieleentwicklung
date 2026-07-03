@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 09 · Hangman — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 09</div>
+    <span class="readout">CH·09a</span>
+    <h1>Hangman</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Der Klassiker: Buchstaben raten, bevor der Galgen fertig gezeichnet ist.
+      Erstaunlich wenig Code für ein komplettes Spiel. Original:
+      <code>A3GPU209_Hangman</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Der ganze Spielzustand ist ein einziger String</h2>
+      <p>
+        Kein Array, kein Grid — nur zwei Strings: <code>phrase</code> (die
+        Lösung) und <code>shown</code> (was der Spieler sieht). Ein Treffer
+        ersetzt an der passenden Stelle den Unterstrich durch den echten
+        Buchstaben. Diese Technik überträgt sich unverändert nach JavaScript.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>shown = phrase.replace(
+  /[A-Za-z]/g, "_");
+
+// bei Treffer an Position i:
+shown = shown.substr(0,i)
+  + phrase.substr(i,1)
+  + shown.substr(i+1);</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>shown = phrase.replace(
+  /[A-Za-z]/g, "_");
+
+// bei Treffer an Position i:
+shown = shown.substring(0,i)
+  + phrase.substring(i,i+1)
+  + shown.substring(i+1);</code></pre>
+        </div>
+      </div>
+      <p>
+        <code>String.replace()</code> mit reguläremAusdruck funktioniert in
+        JavaScript identisch zu AS3 — <code>substr()</code> ist inzwischen
+        offiziell "legacy", <code>substring()</code> macht dasselbe und ist die
+        empfohlene moderne Variante.
+      </p>
+
+      <h2>Ein Fehlversuch = ein Körperteil</h2>
+      <p>
+        Im Original stand für jeden Fehlversuch ein Frame im
+        Galgenmännchen-Symbol bereit (<code>character.gotoAndStop(numWrong+1)</code>).
+        Auf dem Canvas zeichne ich stattdessen die Körperteile
+        (Kopf, Rumpf, Arme, Beine, Gesicht) als kleine Funktionsliste — bei
+        jedem Fehlversuch kommt eine dazu.
+      </p>
+
+      <div class="callout">
+        Einfach auf der Tastatur Buchstaben tippen — <kbd>a</kbd>–<kbd>z</kbd>
+        werden ausgewertet, 8 Fehlversuche sind erlaubt.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="220" height="200"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Ein Zitat erraten, bevor der Galgen fertig ist.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <p id="phrase-display"></p>
+      <p id="wrong-letters"></p>
+      <div class="stage-caption">
+        <span>chapter-09-hangman/game.js</span>
+        <span>220×200</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-08-matchthree/">← Chapter 08 · Match Three</a>
+  <a href="../chapter-09-textexamples/">Weiter: Chapter 09 · Text Examples →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

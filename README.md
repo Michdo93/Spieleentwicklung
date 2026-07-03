@@ -61,7 +61,7 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 | 06 | Bitmap / Jigsaw / Sliding Puzzle | ✅ portiert |
 | 07 | Air Raid 2 / Balloon Pop / Rotation Math / Space Rocks | ✅ portiert |
 | 08 | Collapsing Blocks / Match Three / Point Burst | ✅ portiert |
-| 09 | Hangman / Text Examples / Word Search | ⏳ geplant |
+| 09 | Hangman / Text Examples / Word Search | ✅ portiert |
 | 10 | Trivia (3×) / XML Examples | ⏳ geplant |
 | 11 | Platform Game | ⏳ geplant |
 | 12 | Racing Game / Top-Down Game | ⏳ geplant |

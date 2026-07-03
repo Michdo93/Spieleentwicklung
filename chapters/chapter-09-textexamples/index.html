@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 09 · Text Examples — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 09</div>
+    <span class="readout">CH·09b</span>
+    <h1>Text Examples</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Zwei Demos: ein direkter Vergleich der AS3-String-Methoden mit ihren
+      JS-Äquivalenten, und eine kleine Buchstaben-Flug-Animation für
+      Titelbildschirme. Original: <code>A3GPU209_TextExamples</code>
+      (StringExamples, TextFly).
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>String-Methoden: fast alles überträgt sich 1:1</h2>
+      <p>
+        Der große Vorteil beim Portieren dieses Beispiels: AS3s String-API
+        wurde stark von JavaScript beeinflusst — <code>charAt</code>,
+        <code>indexOf</code>, <code>lastIndexOf</code>, <code>slice</code>,
+        <code>split</code>, <code>join</code>, <code>replace</code> mit
+        regulären Ausdrücken funktionieren identisch. Nur zwei Kleinigkeiten
+        unterscheiden sich:
+      </p>
+      <ul>
+        <li><code>substr(start, length)</code> ist in JS als "legacy" markiert
+          — funktioniert noch, aber <code>substring(start, end)</code> ist
+          die empfohlene Variante</li>
+        <li>AS3s <code>substring()</code> tauscht Start/Ende automatisch, wenn
+          <code>start &gt; end</code> — JS' <code>substring()</code> macht das
+          ebenfalls automatisch, arbeitet intern also schon gleich</li>
+      </ul>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>trace(myString.search(/r.*n/));
+trace(myString.replace(
+  /(raven)(.*)(writing desk)/g,
+  "$3$2$1"
+));</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>console.log(myString.search(/r.*n/));
+console.log(myString.replace(
+  /(raven)(.*)(writing desk)/g,
+  "$3$2$1"
+));</code></pre>
+        </div>
+      </div>
+
+      <h2>TextFly: reine Interpolation, kein Physik-Trick</h2>
+      <p>
+        Jeder Buchstabe bekommt Start- und Endposition, Start- und Endskalierung,
+        eine Gesamtrotation — und bei jedem Animationsschritt wird linear
+        zwischen beiden Werten interpoliert
+        (<code>start*(1-p) + end*p</code>). Dieselbe Interpolationsformel wie
+        beim PointBurst-Effekt aus Kapitel 08, nur auf mehrere Eigenschaften
+        gleichzeitig angewendet.
+      </p>
+
+      <div class="callout">
+        Zwischen den beiden Demos oben wechseln: 1 zeigt String-Methoden im
+        Ausgabe-Panel, 2 spielt die Flug-Animation ab.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="demo-buttons">
+        <button class="btn ghost btn-active" data-demo="strings">1 · String-Methoden</button>
+        <button class="btn ghost" data-demo="textfly">2 · TextFly-Animation</button>
+      </div>
+      <div class="stage-frame">
+        <canvas id="stage" width="480" height="220" tabindex="0"></canvas>
+        <div id="output" class="output-panel"></div>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-09-textexamples/game.js</span>
+        <span>480×220</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-09-hangman/">← Chapter 09 · Hangman</a>
+  <a href="../chapter-09-wordsearch/">Weiter: Chapter 09 · Word Search →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

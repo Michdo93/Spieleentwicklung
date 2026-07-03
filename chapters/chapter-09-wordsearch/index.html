@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 09 · Word Search — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 09</div>
+    <span class="readout">CH·09c</span>
+    <h1>Word Search</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein Buchstabenraster, Wörter per Ziehen markieren — waagerecht,
+      senkrecht oder diagonal, auch rückwärts. Der komplette
+      Platzierungsalgorithmus ist 1:1 aus dem Original übernommen. Original:
+      <code>A3GPU209_WordSearch</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Wörter ins Raster würfeln: Versuch-und-Irrtum</h2>
+      <p>
+        <code>placeLetters()</code> probiert bis zu 2000 Mal, ein Wort an
+        einer zufälligen Position in eine zufällige Richtung (8 mögliche
+        Richtungen, inklusive Diagonalen) zu platzieren. Passt es nicht
+        (Rasterrand oder Buchstabenkonflikt), wird der nächste Versuch
+        gestartet. Am Ende füllen zufällige Buchstaben die Lücken.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>for (var j=0; j&lt;word.length; j++) {
+  if ((x+dx*j &lt; 0) ||
+      (y+dy*j &lt; 0) ||
+      (x+dx*j &gt;= puzzleSize) ||
+      (y+dy*j &gt;= puzzleSize)) {
+    continue repeatLoop;
+  }
+  var cur = letters[x+dx*j][y+dy*j];
+  if ((cur != "*") &amp;&amp;
+      (cur != word.charAt(j))) {
+    continue repeatLoop;
+  }
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>let fits = true;
+for (let j=0; j&lt;word.length; j++) {
+  const x = x0+dx*j, y = y0+dy*j;
+  if (x&lt;0 || y&lt;0 ||
+      x&gt;=puzzleSize ||
+      y&gt;=puzzleSize) {
+    fits = false; break;
+  }
+  const cur = letters[x][y];
+  if (cur !== "*" &amp;&amp;
+      cur !== word.charAt(j)) {
+    fits = false; break;
+  }
+}
+if (!fits) continue;</code></pre>
+        </div>
+      </div>
+      <p>
+        AS3s <code>continue repeatLoop;</code> (ein benanntes
+        <code>continue</code>, das direkt zur äußeren Schleife springt) gibt
+        es in JavaScript nicht ohne Weiteres in dieser Form innerhalb
+        verschachtelter <code>for</code>-Schleifen mit Label — hier reicht
+        aber ein einfaches <code>fits</code>-Flag mit <code>break</code> und
+        einem äußeren <code>continue</code>, funktional identisch.
+      </p>
+
+      <h2>Auswahl-Validierung: nur drei erlaubte Richtungen</h2>
+      <p>
+        <code>isValidRange()</code> prüft nur drei Fälle: gleiche Spalte,
+        gleiche Reihe, oder eine exakte 45°-Diagonale
+        (<code>abs(dx) == abs(dy)</code>) — alles andere wird ignoriert.
+        Unverändert übernommen.
+      </p>
+
+      <h2>Rückwärts gelesen zählt auch</h2>
+      <p>
+        <code>checkWord()</code> vergleicht die Auswahl sowohl vorwärts als
+        auch rückwärts gegen die Wortliste — man kann ein Wort also in beide
+        Richtungen markieren.
+      </p>
+
+      <div class="callout">
+        Von einem Buchstaben zum letzten Buchstaben eines Worts ziehen
+        (waagerecht, senkrecht oder diagonal) und loslassen.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="500" height="360" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">8 Planeten im Buchstabensalat finden.</p>
+          <button id="start-btn" class="btn">Rätsel starten</button>
+        </div>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-09-wordsearch/game.js</span>
+        <span>500×360</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-09-textexamples/">← Chapter 09 · Text Examples</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
