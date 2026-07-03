@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 07 · Space Rocks — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 07</div>
+    <span class="readout">CH·07d</span>
+    <h1>Space Rocks</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein Asteroids-Klon und die Zusammenfassung des ganzen Kapitels: Schub in
+      Blickrichtung, Bildschirm-Wrapping, Geschosse, Schild, Leben, Level mit
+      steigender Geschwindigkeit. Original: <code>A3GPU207_SpaceRocks</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Schub statt direkter Bewegung</h2>
+      <p>
+        Der Unterschied zu Chapter 07a "Fahrendes Auto": Das Schiff bewegt sich
+        nicht direkt in Blickrichtung, sondern <code>↑</code> erhöht eine
+        <strong>Geschwindigkeit</strong> (<code>shipMoveX/Y</code>), die dann
+        über mehrere Frames wirkt — echtes Trägheits-Gefühl statt "Stop-and-Go".
+        Genau wie im Original bleibt die Rotation davon unabhängig steuerbar.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>if (upArrow) {
+  shipMoveX += Math.cos(
+    Math.PI*ship.rotation/180
+  )*thrustPower;
+  shipMoveY += Math.sin(
+    Math.PI*ship.rotation/180
+  )*thrustPower;
+}
+ship.x += shipMoveX;
+ship.y += shipMoveY;</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>if (upArrow) {
+  const rad = deg2rad(rotation);
+  shipMoveX +=
+    Math.cos(rad)*thrust*dt;
+  shipMoveY +=
+    Math.sin(rad)*thrust*dt;
+}
+ship.x += shipMoveX * dt;
+ship.y += shipMoveY * dt;</code></pre>
+        </div>
+      </div>
+
+      <h2>Bildschirm-Wrapping</h2>
+      <p>
+        Verlässt ein Objekt eine Kante, taucht es auf der gegenüberliegenden
+        Seite wieder auf — Schiff, Felsen und (im Original) auch die
+        Geschosse. Eine kleine <code>wrap()</code>-Hilfsfunktion ersetzt die
+        vier einzelnen Grenzfall-Prüfungen aus dem Original für Schiff und
+        Felsen gemeinsam.
+      </p>
+
+      <h2>Felsen teilen sich beim Treffer</h2>
+      <p>
+        Großer Felsen → zwei mittlere, mittlerer → zwei kleine, kleiner
+        verschwindet ganz. Dieselbe rekursive Aufteilung wie im Original,
+        nur dass die Felsenform hier zufällig gezackt statt aus einem
+        Bibliothekssymbol gezeichnet wird.
+      </p>
+
+      <div class="callout">
+        <kbd>←</kbd>/<kbd>→</kbd> drehen, <kbd>↑</kbd> Schub, <kbd>Leertaste</kbd>
+        feuert, <kbd>Z</kbd> aktiviert ein Schild (3 Sekunden Schutz, begrenzte
+        Anzahl pro Leben).
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="560" height="420" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">3 Schiffe, Felsen die sich teilen. Wie weit kommst du?</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Score: 0</span>
+        <span id="hud-lives">Ships: 3</span>
+        <span id="hud-shield">Shields: 3</span>
+        <span id="hud-level">Level: 1</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-07-spacerocks/game.js</span>
+        <span>560×420</span>
+      </div>
+      <p class="controls-hint"><kbd>←</kbd> <kbd>→</kbd> drehen · <kbd>↑</kbd> Schub · <kbd>Space</kbd> feuern · <kbd>Z</kbd> Schild</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-07-balloonpop/">← Chapter 07 · Balloon Pop</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

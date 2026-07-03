@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 07 · Balloon Pop — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 07</div>
+    <span class="readout">CH·07c</span>
+    <h1>Balloon Pop</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Eine Kanone abfeuern, deren Kugel jetzt der Schwerkraft folgt statt
+      geradeaus zu fliegen — eine parabelförmige Flugbahn, drei Level mit
+      wachsender Ballonzahl. Original: <code>A3GPU207_BalloonPop</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Von gerader Linie zu Parabelflug</h2>
+      <p>
+        Der einzige, aber entscheidende Unterschied zu Air Raid 2: Die
+        Kugel-Geschwindigkeit in Y-Richtung bleibt nicht konstant, sondern
+        wächst jeden Frame um einen festen Betrag — Schwerkraft. Startrichtung
+        kommt weiterhin aus <code>cos</code>/<code>sin</code> des
+        Kanonenwinkels (Chapter 07a), aber danach übernimmt die Physik.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>cannonballDX = speed*Math.cos(
+  2*Math.PI*cannon.rotation/360);
+cannonballDY = speed*Math.sin(
+  2*Math.PI*cannon.rotation/360);
+
+// jeden Frame:
+cannonball.x += cannonballDX;
+cannonball.y += cannonballDY;
+cannonballDY += gravity;</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>const rad = deg2rad(rotation);
+ball.dx = speed*Math.cos(rad);
+ball.dy = speed*Math.sin(rad);
+
+// jeden Frame (zeitbasiert):
+ball.x += ball.dx * dt;
+ball.y += ball.dy * dt;
+ball.dy += GRAVITY * dt;</code></pre>
+        </div>
+      </div>
+      <p>
+        Wichtig: Das Original erhöht <code>cannonballDY</code> pro
+        <em>Frame</em> um einen festen Wert (<code>.05</code>) — das ist
+        implizit an 30 fps gebunden. Ich rechne stattdessen mit
+        <code>GRAVITY * dt</code> in echten Pixel/Sekunde², damit die Flugbahn
+        bei jeder Bildrate gleich aussieht.
+      </p>
+
+      <h2>Ballon-Layout: selbst generiert</h2>
+      <p>
+        Im Original standen die Ballons als fertig platzierte Objekte auf der
+        Zeitleiste jedes Levels — von Hand im Flash-Editor positioniert. Ohne
+        diesen visuellen Editor generiere ich für jedes der drei Level ein
+        eigenes Koordinaten-Layout in JavaScript; Levelanzahl, Farben-Zufall
+        und "wachsende Ballonzahl pro Level" entsprechen dem Original.
+      </p>
+
+      <div class="callout">
+        <kbd>←</kbd> / <kbd>→</kbd> zielen, <kbd>Leertaste</kbd> feuert. Drei
+        Level, jeweils mehr Ballons als im vorigen.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="560" height="400" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">3 Level, wachsende Ballonzahl. Triff sie alle.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Shots: 0</span>
+        <span id="hud-level">Level: 1 / 3</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-07-balloonpop/game.js</span>
+        <span>560×400</span>
+      </div>
+      <p class="controls-hint"><kbd>←</kbd> <kbd>→</kbd> zielen · <kbd>Space</kbd> feuert</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-07-airraid2/">← Chapter 07 · Air Raid 2</a>
+  <a href="../chapter-07-spacerocks/">Weiter: Chapter 07 · Space Rocks →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

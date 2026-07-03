@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 07 · Rotation Math — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 07</div>
+    <span class="readout">CH·07a</span>
+    <h1>Rotation Math</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Die Trigonometrie-Grundlagen für den Rest des Kapitels: aus einem Winkel
+      einen Bewegungsvektor berechnen, aus einer Richtung einen Winkel.
+      Original: <code>A3GPU207_RotationMath</code> (PointingArrow, MovingCar).
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Zwei Richtungen derselben Formel</h2>
+      <p>
+        Beide Demos benutzen dieselbe Mathematik, nur in entgegengesetzter
+        Richtung: <strong>Winkel → Vektor</strong> (<code>cos</code>/<code>sin</code>,
+        für Bewegung "in Blickrichtung") und <strong>Vektor → Winkel</strong>
+        (<code>atan2</code>, für "worauf zeigt dieses Objekt gerade").
+        AS3 und JavaScript haben hier exakt dieselbe Math-API — <code>Math.cos</code>,
+        <code>Math.sin</code> und <code>Math.atan2</code> existieren unverändert.
+      </p>
+
+      <h2>Der einzige Stolperstein: Grad vs. Radiant</h2>
+      <p>
+        <code>MovieClip.rotation</code> in AS3 ist in <strong>Grad</strong>, aber
+        <code>Math.cos()</code>/<code>Math.sin()</code> erwarten <strong>Radiant</strong>.
+        Das Original rechnet das an mehreren Stellen von Hand um
+        (<code>2*Math.PI*rotation/360</code>). Im Web gibt es dieselbe Situation —
+        <code>ctx.rotate()</code> nimmt ebenfalls Radiant. Ich habe die Umrechnung
+        einmal als kleine Hilfsfunktion geschrieben, statt sie überall neu
+        auszuschreiben.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3 (mehrfach wiederholt)</span>
+          <pre><code>var angle:Number =
+  2*Math.PI*(car.rotation/360);
+var dx:Number =
+  speed*Math.cos(angle);
+var dy:Number =
+  speed*Math.sin(angle);</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript (einmal definiert)</span>
+          <pre><code>function deg2rad(d) {
+  return d * Math.PI / 180;
+}
+const angle = deg2rad(rotation);
+const dx = Math.cos(angle) * speed;
+const dy = Math.sin(angle) * speed;</code></pre>
+        </div>
+      </div>
+
+      <h2>Wo das als Nächstes gebraucht wird</h2>
+      <ul>
+        <li><strong>Air Raid 2</strong> — die Kanone dreht sich, Kugeln fliegen
+          per <code>cos</code>/<code>sin</code> in Feuerrichtung</li>
+        <li><strong>Balloon Pop</strong> — dieselbe Formel für die Kanonenkugel-Flugbahn</li>
+        <li><strong>Space Rocks</strong> — Schiffsrotation, Schub in Blickrichtung,
+          Geschoss-Richtung — alles dieselbe Formel wie hier</li>
+      </ul>
+
+      <div class="callout">
+        Rechts zwischen den beiden Demos wechseln. Demo 1: Maus bewegen. Demo 2:
+        Pfeiltasten benutzen.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="demo-buttons">
+        <button class="btn ghost btn-active" data-demo="pointer">1 · Zeigepfeil (atan2)</button>
+        <button class="btn ghost" data-demo="car">2 · Fahrendes Auto (cos/sin)</button>
+      </div>
+      <div class="stage-frame">
+        <canvas id="stage" width="480" height="280" tabindex="0"></canvas>
+      </div>
+      <p id="hint" class="controls-hint"></p>
+      <div class="stage-caption">
+        <span>chapter-07-rotationmath/game.js</span>
+        <span>480×280</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-06-sliding-puzzle/">← Chapter 06 · Sliding Puzzle</a>
+  <a href="../chapter-07-airraid2/">Weiter: Chapter 07 · Air Raid 2 →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
