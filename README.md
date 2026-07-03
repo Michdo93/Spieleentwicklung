@@ -65,7 +65,7 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 | 10 | Trivia (3×) / XML Examples | ✅ portiert |
 | 11 | Platform Game | ✅ portiert |
 | 12 | Racing Game / Top-Down Game | ✅ portiert |
-| 13 | Blackjack / Higher or Lower / Video Poker | ⏳ geplant |
+| 13 | Blackjack / Higher or Lower / Video Poker | ✅ portiert |
 | 14 | 3D-Demos / Dungeon 3D / Racing 3D / Target Practice | ⏳ geplant |
 | 15 | Apps | ⏳ geplant |
 

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 13 · Blackjack — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 13</div>
+    <span class="readout">CH·13b</span>
+    <h1>Blackjack</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Vollständiges Blackjack: 6-Deck-Schuh, Einsätze, verdeckte Dealer-Karte,
+      Hit/Stay, Dealer-KI (zieht bis 17), Ass zählt 1 oder 11. Original:
+      <code>A3GPU213_Blackjack</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Karten als kurze Strings — bleibt exakt gleich</h2>
+      <p>
+        Das Original kodiert jede Karte als String wie <code>"h1"</code>
+        (Herz Ass) oder <code>"s13"</code> (Pik König) — Farbe als
+        Buchstabe, Wert als Zahl. Dieses Format wurde unverändert
+        übernommen, nur das Zeichnen der Karte ist anders: statt
+        <code>card.gotoAndStop(cardVal)</code> gegen ein 52-Frame-
+        Bibliothekssymbol wird ein HTML-Element mit Rang und Symbol
+        gerendert.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>var suits = ["c","d","s","h"];
+var temp = [];
+for (var i=0; i&lt;6; i++)
+  for (var suit=0; suit&lt;4; suit++)
+    for (var num=1; num&lt;14; num++)
+      temp.push(suits[suit]+num);</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>const suits = ["c","d","s","h"];
+const temp = [];
+for (let i=0; i&lt;6; i++)
+  for (const suit of suits)
+    for (let num=1; num&lt;14; num++)
+      temp.push(suit+num);</code></pre>
+        </div>
+      </div>
+
+      <h2>Die Timed-Event-Queue: dasselbe Muster wie <code>Timer</code></h2>
+      <p>
+        Statt jede Karte sofort auf einmal auszuteilen, reiht das Original
+        Ereignisse wie <code>"deal card to dealer"</code> in eine Liste und
+        arbeitet sie im Sekundentakt per <code>Timer</code> ab — das erzeugt
+        das typische "eine Karte nach der anderen"-Gefühl am Spieltisch.
+        Dasselbe Muster funktioniert mit <code>setInterval()</code>
+        identisch.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>timedEvents = new Timer(1000);
+timedEvents.addEventListener(
+  TimerEvent.TIMER,
+  playTimedEvents);
+timedEvents.start();
+
+function playTimedEvents(e) {
+  var thisEvent =
+    timedEventsList.shift();
+  if (thisEvent ==
+      "deal card to dealer") {
+    dealCard("dealer");
+  } // ...
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>this.timedEvents = setInterval(
+  () =&gt; this.playTimedEvents(),
+  700
+);
+
+playTimedEvents() {
+  const thisEvent =
+    this.timedEventsList.shift();
+  if (thisEvent ===
+      "deal card to dealer") {
+    this.dealCard("dealer");
+  } // ...
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Ass-Logik und Dealer-KI: unverändert</h2>
+      <p>
+        <code>handValue()</code> zählt ein Ass zunächst als 1, erhöht die
+        Summe aber um 10 (macht das Ass effektiv zu 11), falls das nicht zum
+        Überkaufen führt — die klassische Blackjack-Ass-Regel, 1:1
+        übernommen. Die Dealer-KI zieht stur, solange ihr Handwert unter 17
+        liegt.
+      </p>
+
+      <div class="callout">
+        Startgeld $100, Einsatz $5–25. Blackjack (Ass + Bild-/10er-Karte mit
+        den ersten zwei Karten) zahlt 3:2.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="table">
+        <div class="table-hud">
+          <span id="cash">Cash: $100</span>
+          <span id="bet">Bet: $5</span>
+        </div>
+
+        <div class="hand-label">Dealer <span id="dealer-value" class="hand-value"></span></div>
+        <div id="dealer-row" class="card-row"></div>
+
+        <div class="hand-label">Du <span id="player-value" class="hand-value"></span></div>
+        <div id="player-row" class="card-row"></div>
+
+        <p id="result"></p>
+
+        <div class="table-buttons">
+          <button id="btn-addbet" class="btn ghost">+ $5 Einsatz</button>
+          <button id="btn-deal" class="btn">Deal Cards</button>
+          <button id="btn-hit" class="btn" style="display:none;">Hit</button>
+          <button id="btn-stay" class="btn ghost" style="display:none;">Stay</button>
+          <button id="btn-continue" class="btn" style="display:none;">Weiter</button>
+        </div>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-13-blackjack/game.js</span>
+        <span>6-Deck-Schuh, 312 Karten</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-13-higherorlower/">← Chapter 13 · Higher or Lower</a>
+  <a href="../chapter-13-videopoker/">Weiter: Chapter 13 · Video Poker →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 13 · Higher or Lower — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 13</div>
+    <span class="readout">CH·13a</span>
+    <h1>Higher or Lower</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Der denkbar einfachste Einstieg in Kartenspiele: höher oder niedriger
+      raten, sechs Karten am Stück richtig liegen gewinnt. Original:
+      <code>A3GPU213_HigherOrLower</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Kein echtes Kartendeck — bewusst simpel</h2>
+      <p>
+        Anders als Blackjack und Video Poker in diesem Kapitel benutzt
+        <code>HighLow.as</code> gar kein echtes 52-Karten-Deck mit Farben.
+        Stattdessen: <code>numCards = 20</code>, jede "Karte" ist einfach eine
+        Zufallszahl von 1 bis 20 — ohne Zurücklegen-Logik, ohne Farben. Das
+        macht dieses Mini-Spiel zum idealen ersten Schritt vor den beiden
+        komplexeren Kartenspielen.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>newCard = Math.floor(
+  Math.random()*numCards+1);
+var card:Cards = new Cards();
+card.gotoAndStop(newCard);</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>this.newCard = Math.floor(
+  Math.random()*numCards)+1;
+const el = document.createElement('div');
+el.textContent = this.newCard;</code></pre>
+        </div>
+      </div>
+
+      <h2>Die Vergleichslogik: unverändert</h2>
+      <p>
+        <code>checkCard()</code> prüft nur zwei Fälle — "höher gewählt, aber
+        neue Karte war kleiner oder gleich" bzw. umgekehrt. Ein Gleichstand
+        zählt in beiden Fällen als falsch geraten, exakt wie im Original.
+      </p>
+
+      <div class="callout">
+        Sechs Karten am Stück richtig raten, um zu gewinnen. Ein Fehlgriff
+        beendet die Runde sofort.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="quiz-frame">
+        <p id="message"></p>
+        <div id="card-track"></div>
+        <div class="guess-buttons">
+          <button id="btn-higher" class="btn ghost" disabled>▲ Höher</button>
+          <button id="btn-lower" class="btn ghost" disabled>▼ Niedriger</button>
+        </div>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Sechs Karten am Stück richtig raten.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-13-higherorlower/game.js</span>
+        <span>Karten 1–20</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-12-topdowngame/">← Chapter 12 · Top-Down Game</a>
+  <a href="../chapter-13-blackjack/">Weiter: Chapter 13 · Blackjack →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

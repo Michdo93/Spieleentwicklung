@@ -1,0 +1,124 @@
+.table {
+  background: #0d3d24;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.hand-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 6px;
+}
+.hand-value {
+  font-family: var(--font-mono);
+  color: var(--amber);
+  margin-left: 8px;
+}
+
+.card-row {
+  display: flex;
+  gap: 8px;
+  min-height: 84px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.playing-card {
+  position: relative;
+  width: 56px;
+  height: 78px;
+  border-radius: 6px;
+  background: #f4f1e8;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.playing-card.dark { color: #1a1a1a; }
+.playing-card.red { color: #c0392b; }
+.playing-card .corner {
+  position: absolute;
+  font-size: 0.68rem;
+  line-height: 1.05;
+  text-align: center;
+}
+.playing-card .corner.top { top: 3px; left: 4px; }
+.playing-card .corner.bottom { bottom: 3px; right: 4px; transform: rotate(180deg); }
+.playing-card .pip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.playing-card.face-down { background: transparent; box-shadow: none; }
+.card-back {
+  width: 100%; height: 100%;
+  border-radius: 6px;
+  background: repeating-linear-gradient(45deg, #3a4657, #3a4657 4px, #2a3340 4px, #2a3340 8px);
+  border: 2px solid #1a212b;
+}
+
+.table-hud {
+  display: flex;
+  gap: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--amber);
+  margin-bottom: 14px;
+}
+
+#result {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text);
+  min-height: 1.4em;
+  margin-bottom: 14px;
+}
+
+.table-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.playing-card {
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.playing-card.marked {
+  opacity: 0.35;
+  transform: translateY(10px);
+}
+.playing-card.marked::after {
+  content: "DISCARD";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border-radius: 6px;
+}
+
+.payout-table {
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.payout-table div {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}

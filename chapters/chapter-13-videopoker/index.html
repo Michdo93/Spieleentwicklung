@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 13 · Video Poker — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 13</div>
+    <span class="readout">CH·13c</span>
+    <h1>Video Poker</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Klassisches 5-Karten-Draw-Poker mit vollständiger Handbewertung —
+      von "Nothing" bis Royal Flush. Der komplexeste Analyse-Code in diesem
+      Kapitel. Original: <code>A3GPU213_VideoPoker</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Handbewertung: reine Datenverarbeitung, 1:1 übertragbar</h2>
+      <p>
+        <code>handValue()</code> ist der wertvollste Teil dieses Kapitels —
+        eine komplette Poker-Handanalyse (Straight, Flush, Paare, Drillinge,
+        Vierlinge, Royal Flush) in überschaubarem Code. Weil das reine
+        Array-/Zahlen-Verarbeitung ist, ohne jeden Bezug zu Flash-
+        spezifischen APIs, ließ sich diese Funktion nahezu unverändert
+        übernehmen.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>var counts:Array = [];
+for(i=0;i&lt;14;i++) counts.push(0);
+for(i=0;i&lt;5;i++) counts[nums[i]]++;
+
+var pair=false, twoPair=false;
+for(i=1;i&lt;14;i++) {
+  if (counts[i] == 2) {
+    if (pair) twoPair = true;
+    else pair = true;
+  }
+  // ...
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>const counts = new Array(14).fill(0);
+nums.forEach(n =&gt; counts[n]++);
+
+let pair = false, twoPair = false;
+for (let i=1; i&lt;14; i++) {
+  if (counts[i] === 2) {
+    if (pair) twoPair = true;
+    else pair = true;
+  }
+  // ...
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Karten zum Abwerfen markieren</h2>
+      <p>
+        Im Original wird eine angeklickte Karte "umgedreht"
+        (<code>gotoAndStop(2)</code>), um sie zum Abwerfen zu markieren —
+        hier stattdessen eine halbtransparente "DISCARD"-Markierung per CSS.
+        Funktional identisch: Karte anklicken markiert sie, nochmal anklicken
+        hebt die Markierung wieder auf.
+      </p>
+
+      <h2>Sortieren für die Analyse — nicht für die Anzeige</h2>
+      <p>
+        <code>compareHands()</code> sortiert eine <em>Kopie</em> der Hand
+        nach Zahlenwert, bevor <code>handValue()</code> nach Straights und
+        Paaren sucht — die tatsächlich angezeigten Karten bleiben in der
+        Reihenfolge, in der sie ausgeteilt wurden. Ein kleines, aber
+        wichtiges Detail, das 1:1 übernommen wurde.
+      </p>
+
+      <div class="callout">
+        DEAL → Karten zum Abwerfen anklicken → DRAW. Auszahlungstabelle
+        unten rechts, Einsatz ist fix $1 pro Runde.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="table">
+        <div class="table-hud">
+          <span id="cash">Cash: $100</span>
+        </div>
+        <div id="card-row" class="card-row"></div>
+        <p id="result"></p>
+        <div class="table-buttons">
+          <button id="btn-deal" class="btn">Deal</button>
+          <button id="btn-draw" class="btn" style="display:none;">Draw</button>
+          <button id="btn-continue" class="btn ghost" style="display:none;">Weiter</button>
+        </div>
+        <div id="payout-table" class="payout-table"></div>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-13-videopoker/game.js</span>
+        <span>52 Karten, Einsatz $1</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-13-blackjack/">← Chapter 13 · Blackjack</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
