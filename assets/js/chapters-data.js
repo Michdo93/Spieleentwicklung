@@ -19,7 +19,7 @@ const CHAPTERS = [
     status: "live" },
   { book: 2, slug: "chapter-02-game-elements", title: "Game Elements", original: "A3GPU202_GameElements",
     desc: "Baukasten: Maus/Tastatur, Timer, Zufallszahlen, Kollision, Sprite-Tiefe, Sounds.",
-    status: "planned" },
+    status: "live" },
   { book: 3, slug: "chapter-03-matching-game", title: "Matching Game", original: "A3GPU203_MatchingGame",
     desc: "Karten-Memory-Grundgerüst: Sprite-Arrays, Klick-Logik, Zustände.",
     status: "planned" },

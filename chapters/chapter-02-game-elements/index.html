@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 02 · Game Elements — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 02</div>
+    <span class="readout">CH·02</span>
+    <h1>Game Elements</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Der Werkzeugkasten, aus dem sich fast jedes spätere Kapitel bedient:
+      Zeichnen, Maus, Tastatur, Ziehen, Zeit/Physik, Kollision, Zeichentiefe,
+      Timer, Zufall, Sound, Texteingabe. Original: <code>A3GPU202_GameElements</code>
+      (ca. 28 kleine Einzeldemos, hier zu 12 thematischen Bausteinen gebündelt).
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Warum ein Sammelkapitel?</h2>
+      <p>
+        Im Original bestand dieses Kapitel aus knapp 30 winzigen, unabhängigen
+        FLA-Dateien — jede zeigt genau ein Konzept, meist nur 10–40 Zeilen
+        Timeline-Code. Statt 28 einzelne Unterordner anzulegen, bündle ich sie
+        hier zu 12 Demos mit Tabs — inhaltlich verlustfrei, aber deutlich
+        besser durchsuchbar.
+      </p>
+
+      <h2>Die wichtigsten Übersetzungen dieses Kapitels</h2>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>graphics.beginFill(0x333333);
+graphics.drawCircle(x,y,r);
+graphics.endFill();
+
+stage.addEventListener(
+  KeyboardEvent.KEY_DOWN, fn);
+
+mc.hitTestObject(other);
+
+setChildIndex(mc, numChildren-1);
+
+var t:Timer = new Timer(1000);
+t.addEventListener(
+  TimerEvent.TIMER, fn);</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>ctx.fillStyle = '#333333';
+ctx.beginPath();
+ctx.arc(x,y,r,0,Math.PI*2);
+ctx.fill();
+
+window.addEventListener(
+  'keydown', fn);
+
+rectsOverlap(a, b) // selbst
+  geschrieben (AABB)
+
+// Array-Reihenfolge neu sortieren
+arr.push(arr.splice(i,1)[0]);
+
+setInterval(fn, 1000);</code></pre>
+        </div>
+      </div>
+
+      <h2>Was besonders auffällt</h2>
+      <ul>
+        <li><strong>Kein <code>hitTestObject()</code>/<code>hitTestPoint()</code> im Browser</strong> —
+          beide werden hier als kleine eigene Funktionen nachgebaut (AABB-Rechteck-
+          Überlappung bzw. Punkt-in-Bereich-Test) und danach im ganzen Repo wiederverwendet.</li>
+        <li><strong>Keine Anzeigeliste</strong> — <code>addChild()</code>/<code>setChildIndex()</code>
+          existieren nicht; Zeichenreihenfolge = Reihenfolge, in der wir im JS-Array zeichnen
+          (Demo 8 macht das sichtbar).</li>
+        <li><strong>Timer vs. requestAnimationFrame</strong> — für "alle X Millisekunden etwas tun"
+          bleibt <code>setInterval()</code> die richtige Wahl (Demo 9); für flüssige Animation
+          bleibt <code>requestAnimationFrame</code> Standard (Demo 4, 5, 6).</li>
+        <li><strong>Sound</strong> — die Trennung "Sound aus der Bibliothek" vs. "Sound von extern
+          laden" gibt es im Web nicht mehr in der Form; stattdessen: <code>Audio()</code>/
+          <code>&lt;audio&gt;</code> für Dateien, Web-Audio-API für synthetische Töne.</li>
+      </ul>
+
+      <div class="callout">
+        Rechts einfach durch die zwölf Tabs klicken — jede Demo hängt und entfernt ihre
+        eigenen Event-Listener beim Wechsel selbst, genau wie im Original beim Verlassen
+        eines Timeline-Frames.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div id="demo-buttons" class="demo-buttons"></div>
+      <div class="stage-frame">
+        <canvas id="stage" width="480" height="260" tabindex="0"></canvas>
+        <div id="output" class="output-panel"></div>
+        <button id="action-btn" class="btn ghost"></button>
+        <div id="sound-buttons">
+          <button id="sound-lib-btn" class="btn ghost">Synthetischer Ton</button>
+          <button id="sound-ext-btn" class="btn ghost">Externe mp3</button>
+        </div>
+        <div id="text-input-wrap">
+          <input id="text-input-field" type="text" placeholder="Text eingeben, Enter drücken…">
+        </div>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-02-game-elements/game.js</span>
+        <span>480×260</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-01-helloworld/">← Chapter 01 · Hello World</a>
+  <a href="../chapter-05-airraid/">Weiter: Chapter 05 · Air Raid →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

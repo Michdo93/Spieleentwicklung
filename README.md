@@ -53,7 +53,7 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 | # | Kapitel | Status |
 |---|---------|--------|
 | 01 | Hello World | ✅ portiert |
-| 02 | Game Elements | ⏳ geplant |
+| 02 | Game Elements | ✅ portiert |
 | 03 | Matching Game | ⏳ geplant |
 | 04 | Deduction / Memory Game | ⏳ geplant |
 | 05 | Air Raid | ✅ portiert |

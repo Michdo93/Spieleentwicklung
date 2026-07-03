@@ -1,0 +1,64 @@
+.demo-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.demo-buttons .btn.ghost {
+  font-size: 0.72rem;
+  padding: 6px 10px;
+}
+.demo-buttons .btn.ghost.btn-active {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.output-panel {
+  margin-top: 12px;
+  background: #05070a;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--teal);
+  white-space: pre-wrap;
+  min-height: 56px;
+  max-height: 130px;
+  overflow-y: auto;
+}
+.output-panel::before {
+  content: "▸ Ausgabe (trace)";
+  display: block;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+#action-btn { display: none; margin-top: 10px; }
+
+#sound-buttons {
+  display: none;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#text-input-wrap {
+  display: none;
+  margin-top: 10px;
+}
+#text-input-wrap input {
+  width: 100%;
+  background: #05070a;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+#text-input-wrap input:focus-visible {
+  outline: 2px solid var(--amber);
+}
