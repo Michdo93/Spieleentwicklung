@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 11 · Platform Game — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 11</div>
+    <span class="readout">CH·11</span>
+    <h1>Platform Game</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Das Jump-'n'-Run-Grundgerüst: Schwerkraft, Sprung, Kollision mit
+      Boden/Wänden, ein scrollendes Level, ein Gegner, der an Wänden umkehrt,
+      Schatz/Schlüssel/Tür/Truhe. Original: <code>A3GPU211_PlatformGame</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Die Physik in einer einzigen Funktion</h2>
+      <p>
+        <code>moveCharacter()</code> ist der Kern des ganzen Spiels — und wird
+        für Held <em>und</em> Gegner gleichermaßen benutzt. Die Werte
+        <code>gravity=.004</code>, <code>jumpSpeed=.8</code>,
+        <code>walkSpeed=.15</code> sind bereits "Pixel pro Millisekunde"
+        gerechnet, genau wie <code>timeDiff</code> selbst — das lässt sich
+        unverändert übernehmen, ohne eine einzige Konstante neu kalibrieren
+        zu müssen.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>var verticalChange =
+  char.dy*timeDiff
+  + timeDiff*gravity;
+if (verticalChange &gt; 15.0)
+  verticalChange = 15.0;
+char.dy += timeDiff*gravity;
+
+if (char.jump) {
+  char.jump = false;
+  char.dy = -char.jumpSpeed;
+  verticalChange = -char.jumpSpeed;
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>let verticalChange =
+  char.dy*timeDiff
+  + timeDiff*gravity;
+if (verticalChange &gt; 15.0)
+  verticalChange = 15.0;
+char.dy += timeDiff*gravity;
+
+if (char.jump) {
+  char.jump = false;
+  char.dy = -char.jumpSpeed;
+  verticalChange = -char.jumpSpeed;
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Zwei Kollisionsschleifen: erst landen, dann anstoßen</h2>
+      <p>
+        Zuerst wird geprüft, ob der Charakter auf einer Plattform <em>landet</em>
+        (vertikale Bewegung gegen alle <code>fixedObjects</code>), danach —
+        mit der bereits korrigierten Y-Position — ob er seitlich gegen eine
+        Wand <em>läuft</em>. Diese Reihenfolge ist wichtig: Sie verhindert,
+        dass man beim Landen gleichzeitig hängenbleibt. 1:1 aus dem Original
+        übernommen.
+      </p>
+
+      <h2>Kamera folgt dem Helden</h2>
+      <p>
+        <code>scrollWithHero()</code> hält den Helden zwischen zwei
+        unsichtbaren Rändern (100px vom Bildschirmrand) — verlässt er diesen
+        Korridor, verschiebt sich die Kamera, begrenzt auf die Levelgrenzen.
+        Dasselbe Prinzip wie in unzähligen Seitwärts-Scrollern.
+      </p>
+
+      <h2>Das Level: von Hand nachgebaut</h2>
+      <p>
+        Im Original standen Boden-, Wand-, Schatz- und Türsymbole fertig auf
+        der Flash-Zeitleiste — keine Daten, die sich exportieren lassen. Das
+        Beispiellevel hier (zwei Sprunghindernisse, eine Schatzplattform, ein
+        patrouillierender Gegner, Schlüssel → Tür → Schatztruhe) wurde deshalb
+        neu entworfen, benutzt aber exakt dieselben Objektarten und dieselbe
+        Physik wie das Original.
+      </p>
+
+      <div class="callout">
+        <kbd>←</kbd> / <kbd>→</kbd> laufen, <kbd>Leertaste</kbd> springt. Auf
+        einen Gegner von oben springen, um ihn zu besiegen — von der Seite
+        berühren kostet ein Leben. Schlüssel vor der Tür einsammeln, Truhe
+        danach öffnet das Spiel als gewonnen.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="550" height="400" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Schwerkraft, Sprünge, ein Gegner, ein Schatz hinter verschlossener Tür.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+        <div id="dialog" class="dialog-box">
+          <p id="dialog-text"></p>
+          <button id="dialog-btn" class="btn">OK</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Score: 0</span>
+        <span id="hud-lives">Lives: 3</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-11-platformgame/game.js</span>
+        <span>550×400, Level 1450px breit</span>
+      </div>
+      <p class="controls-hint"><kbd>←</kbd> <kbd>→</kbd> laufen · <kbd>Space</kbd> springt</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-10-picturetriviagame/">← Chapter 10 · Picture Trivia</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -91,7 +91,7 @@ const CHAPTERS = [
     status: "live" },
   { book: 11, slug: "chapter-11-platformgame", title: "Platform Game", original: "A3GPU211_PlatformGame",
     desc: "Jump-'n'-Run-Grundgerüst: Gravitation, Bodenerkennung, Tile-Kollision.",
-    status: "planned" },
+    status: "live" },
   { book: 12, slug: "chapter-12-racinggame", title: "Racing Game", original: "A3GPU212_RacingGame",
     desc: "Top-Down-Rennspiel: Lenkung, Beschleunigung, Streckenbegrenzung.",
     status: "planned" },
