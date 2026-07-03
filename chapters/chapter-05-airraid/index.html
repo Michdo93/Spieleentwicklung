@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 05 · Air Raid — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 05</div>
+    <span class="readout">CH·05</span>
+    <h1>Air Raid</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Das erste echte Spiel im Buch: eine Flak-Kanone schießt auf Flugzeuge.
+      Hier lernt man die Grundmuster, die praktisch jedes Arcade-Spiel braucht —
+      eigene Klasse pro Spielobjekt, zeitbasierte Bewegung statt Frame-Zählung,
+      Kollisionserkennung, Objektlisten verwalten. Original: <code>A3GPU205_AirRaid</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Architektur: vier Klassen, eine Aufgabe pro Klasse</h2>
+      <p>
+        Das Original teilt das Spiel sauber auf: <code>AirRaid</code> (Spielleitung/Zustand),
+        <code>AAGun</code> (Spielerfigur), <code>Airplane</code> (Gegner) und <code>Bullet</code>
+        (Projektil). Diese Aufteilung habe ich 1:1 übernommen — nur dass aus AS3-Klassen
+        JS-Klassen werden und aus <code>MovieClip</code>-Vererbung ein einfaches
+        <code>this.game</code>-Referenz-Muster, weil es im Canvas keine automatische
+        Anzeigeliste gibt, die "weiß", wer zu wem gehört.
+      </p>
+
+      <h2>ENTER_FRAME → requestAnimationFrame + Delta-Zeit</h2>
+      <p>
+        Das Original berechnet Bewegung nicht in "Pixel pro Frame", sondern in
+        "Pixel pro Sekunde" über <code>flash.utils.getTimer()</code> — dadurch bleibt
+        das Spiel gleich schnell, egal wie die Bildrate schwankt. Das Web-Äquivalent
+        ist exakt dasselbe Prinzip mit <code>requestAnimationFrame</code> und der
+        Zeitdifferenz zwischen zwei Frames.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>addEventListener(
+  Event.ENTER_FRAME, moveGun
+);
+
+function moveGun(e:Event) {
+  var dt:int =
+    getTimer() - lastTime;
+  lastTime += dt;
+  x += speed * dt / 1000;
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>requestAnimationFrame(loop);
+
+function loop(now) {
+  const dt =
+    (now - lastTime) / 1000;
+  lastTime = now;
+  x += speed * dt;
+  requestAnimationFrame(loop);
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>hitTestObject() → eigene Rechteck-Kollision</h2>
+      <p>
+        Flash brachte <code>hitTestObject()</code> als fertige Bounding-Box-Kollision mit.
+        Im Canvas gibt es das nicht eingebaut — wir schreiben die klassische
+        Achsen-parallele Rechteck-Überlappung (AABB) selbst, sie ist nur wenige Zeilen lang
+        und wird im restlichen Buch noch oft gebraucht.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>if (bullet.hitTestObject(plane)) {
+  plane.planeHit();
+  bullet.deleteBullet();
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>function rectsHit(a, b) {
+  return a.x &lt; b.x+b.w &amp;&amp; a.x+a.w &gt; b.x
+      &amp;&amp; a.y &lt; b.y+b.h &amp;&amp; a.y+a.h &gt; b.y;
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Objektverwaltung: Arrays statt Anzeigeliste</h2>
+      <p>
+        <code>airplanes</code> und <code>bullets</code> sind im Original einfache Arrays,
+        über die rückwärts iteriert wird, wenn währenddessen Elemente entfernt werden
+        (klassisches Muster, um Indexverschiebung beim Löschen zu vermeiden). Das ist in
+        JavaScript identisch übernommen — <code>splice()</code> statt <code>Array.splice()</code>
+        gibt es hier wortwörtlich in beiden Sprachen.
+      </p>
+
+      <h2>Grafik: Vektorzeichnung statt Bibliothekssymbole</h2>
+      <p>
+        Kanone, Flugzeuge und Projektile waren im Original Flash-Bibliothekssymbole
+        (in der FLA gezeichnet, per <code>Class</code>-Verknüpfung an die AS3-Klassen
+        gebunden). Da es diese Bibliothek im Web nicht gibt, zeichne ich die Formen
+        direkt mit der Canvas-2D-API — funktional gleichwertig zu
+        <code>graphics.beginFill()/drawRect()</code>, nur ohne den Umweg über den
+        Flash-Editor.
+      </p>
+
+      <div class="callout">
+        Steuerung: <kbd>←</kbd> / <kbd>→</kbd> bewegen die Kanone,
+        <kbd>Leertaste</kbd> feuert. 20 Schuss, keine Nachladung — genau wie im Original.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="550" height="400" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Bereit? 20 Schuss, so viele Flugzeuge wie möglich treffen.</p>
+          <button id="start-btn" class="btn">Spiel starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-score">Score: 0</span>
+        <span id="hud-shots">Shots Left: 20</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-05-airraid/game.js</span>
+        <span>550×400</span>
+      </div>
+      <p class="controls-hint"><kbd>←</kbd> <kbd>→</kbd> bewegen · <kbd>Space</kbd> feuert</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-01-helloworld/">← Chapter 01 · Hello World</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

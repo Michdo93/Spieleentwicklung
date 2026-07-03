@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AS3 → HTML5 Game Dev Lab</title>
+<meta name="description" content="Ein Buch voller Flash/ActionScript-3-Spiele, Stück für Stück nach HTML5 + JavaScript portiert – zum Nachbauen und Lernen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="#kapitel">Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">// ehemals „ActionScript 3.0 Game Programming University“</div>
+    <h1>Spieleprogrammierung lernen, ein Kapitel nach dem anderen.</h1>
+    <p class="lede">
+      Dieses Repo portiert ein komplettes Flash/AS3-Lehrbuch Schritt für Schritt nach
+      HTML5, Canvas und JavaScript. Jedes Kapitel bleibt eigenständig lauffähig,
+      bringt eine kurze Erklärung mit, was neu dazugekommen ist – und zeigt links
+      den alten ActionScript-Code neben der neuen JS-Version.
+    </p>
+    <div class="hero-progress" id="progress">
+      <span class="bar"><span id="progress-bar" style="width:0%"></span></span>
+      <span id="progress-text">lädt…</span>
+    </div>
+  </div>
+</section>
+
+<main class="wrap" id="kapitel">
+  <div id="chapter-list"></div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    Original-Lernmaterial: „ActionScript 3.0 Game Programming University“ (Flash/AS3, 2011).
+    Diese Portierung ersetzt Flash vollständig durch HTML5 Canvas + Vanilla JS,
+    Kapitel für Kapitel. Fortschritt und Quellcode: <a href="https://github.com/Michdo93" target="_blank" rel="noopener">github.com/Michdo93</a>.
+  </div>
+</footer>
+
+<script src="assets/js/chapters-data.js"></script>
+<script>
+  const listEl = document.getElementById("chapter-list");
+  const byBook = {};
+  CHAPTERS.forEach(c => { (byBook[c.book] ??= []).push(c); });
+
+  const bookNums = Object.keys(byBook).map(Number).sort((a,b) => a-b);
+
+  bookNums.forEach(book => {
+    const group = document.createElement("div");
+    group.className = "book-group";
+
+    const label = document.createElement("div");
+    label.className = "book-group-label";
+    label.textContent = BOOK_TITLES[book] || `Kapitel ${String(book).padStart(2,"0")}`;
+    group.appendChild(label);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    byBook[book].forEach(c => {
+      const isLive = c.status === "live";
+      const el = document.createElement(isLive ? "a" : "div");
+      el.className = "card" + (isLive ? "" : " disabled");
+      if (isLive) el.href = `chapters/${c.slug}/`;
+      el.innerHTML = `
+        <div class="card-top">
+          <span class="num readout">${c.original.replace("A3GPU2", "CH·")}</span>
+          <span class="badge ${isLive ? "live" : "planned"}">${isLive ? "Verfügbar" : "Geplant"}</span>
+        </div>
+        <h3>${c.title}</h3>
+        <p>${c.desc}</p>
+      `;
+      grid.appendChild(el);
+    });
+
+    group.appendChild(grid);
+    listEl.appendChild(group);
+  });
+
+  const total = CHAPTERS.length;
+  const live = CHAPTERS.filter(c => c.status === "live").length;
+  document.getElementById("progress-bar").style.width = `${Math.round(live/total*100)}%`;
+  document.getElementById("progress-text").textContent = `${live} / ${total} Kapitel portiert`;
+</script>
+</body>
+</html>

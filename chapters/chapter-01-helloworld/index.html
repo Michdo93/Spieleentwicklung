@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 01 · Hello World — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 01</div>
+    <span class="readout">CH·01</span>
+    <h1>Hello World</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Der Einstieg: ein Objekt auf die Bühne bringen, Text anzeigen, und verstehen,
+      <em>wann</em> im Lebenszyklus einer Klasse welcher Code läuft. Original: <code>A3GPU201_HelloWorld</code>
+      (HelloWorld1–3, DebugExample, TooEarlyExample).
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Worum es geht</h2>
+      <p>
+        In Flash war die "Bühne" (Stage) ein Objektbaum, auf den Zeitleisten-Frames und
+        ActionScript-Klassen gleichzeitig einwirken konnten. Im Web haben wir dafür kein
+        Zeitleisten-Konzept mehr — stattdessen ein <code>&lt;canvas&gt;</code>-Element,
+        auf das wir per JavaScript direkt zeichnen, und die Browser-Konsole statt
+        des Flash-"Ausgabe"-Fensters für <code>trace()</code>.
+      </p>
+
+      <div class="callout">
+        Lern-Idee dieses Kapitels: <strong>trace() → console.log()</strong>, und
+        <strong>TextField auf der Bühne → Text auf dem Canvas zeichnen</strong>.
+        Das sind die zwei Übersetzungen, die durch fast das ganze restliche Buch
+        durchgezogen werden.
+      </div>
+
+      <h2>1) Nur eine Konsolen-Ausgabe</h2>
+      <p>Das simpelste Beispiel im Buch schreibt nichts auf die Bühne, nur ins Ausgabefenster.</p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>public class HelloWorld1
+  extends MovieClip {
+
+  public function HelloWorld1() {
+    trace("Hello World.");
+  }
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>function helloWorld1() {
+  console.log("Hello World.");
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>2) Sichtbarer Text auf der Bühne</h2>
+      <p>
+        <code>HelloWorld3</code> erzeugt ein <code>TextField</code> und hängt es per
+        <code>addChild()</code> in die Anzeigeliste. Auf dem Canvas gibt es keine
+        Anzeigeliste einzelner Objekte — wir zeichnen den Text direkt in den
+        Frame-Buffer.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>var myText:TextField
+  = new TextField();
+myText.text = "Hello World!";
+addChild(myText);</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>ctx.font = '24px monospace';
+ctx.fillStyle = '#ffb84d';
+ctx.fillText(
+  'Hello World!', 20, 20
+);</code></pre>
+        </div>
+      </div>
+
+      <h2>3) Debug-Ausgaben mit Positionierung</h2>
+      <p>
+        <code>DebugExample</code> erzeugt in einer Schleife zehn Textfelder, jedes
+        20&nbsp;Pixel tiefer als das vorige — eine simple, aber wirkungsvolle Methode,
+        um Programmzustände sichtbar zu machen, bevor man einen echten Debugger nutzt.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>for (var i:int=0; i&lt;10; i++) {
+  showNumber(i);
+}
+
+function showNumber(n:int) {
+  var t:TextField = new TextField();
+  t.text = String(n);
+  t.y = n * 20;
+  addChild(t);
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>for (let i = 0; i &lt; 10; i++) {
+  showNumber(i);
+}
+
+function showNumber(n) {
+  ctx.fillText(String(n), 20, n * 22);
+  console.log('showNumber:', n);
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>4) Der Klassiker: zu früh zugegriffen</h2>
+      <p>
+        <code>TooEarlyExample</code> zeigt einen Fehler, den praktisch jeder AS3- <em>und</em>
+        JS-Einsteiger macht: Der Konstruktor eines Objekts läuft, <em>bevor</em> seine
+        Kind-Objekte (dort: ein Textfeld auf Frame&nbsp;2 der Zeitleiste) existieren.
+        Im Web ist die Entsprechung: Code läuft, bevor das DOM fertig geladen ist,
+        oder bevor ein <code>fetch()</code> zurückgekommen ist.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3 — schlägt fehl</span>
+          <pre><code>function TooEarlyExample() {
+  gotoAndStop(2);
+  // existiert erst ab Frame 2!
+  this.textFieldOne.text = "...";
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript — dieselbe Falle</span>
+          <pre><code>const el = document.getElementById('x');
+el.textContent = '...';
+// ReferenceError, wenn das Skript
+// vor dem &lt;div id="x"&gt; im HTML steht</code></pre>
+        </div>
+      </div>
+      <div class="callout">
+        Lösung in beiden Welten: entweder auf das richtige Lebenszyklus-Ereignis warten
+        (<code>DOMContentLoaded</code> / <code>window.onload</code>) oder den Code erst
+        ausführen, nachdem das referenzierte Objekt wirklich erzeugt wurde.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="demo-buttons">
+        <button class="btn ghost btn-active" data-demo="hello1">1 · trace only</button>
+        <button class="btn ghost" data-demo="hello3">2 · TextField</button>
+        <button class="btn ghost" data-demo="debug">3 · Debug-Loop</button>
+        <button class="btn ghost" data-demo="tooearly">4 · Zu früh</button>
+      </div>
+      <div class="stage-frame">
+        <canvas id="stage" width="480" height="200"></canvas>
+        <div id="output" class="output-panel"></div>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-01-helloworld/game.js</span>
+        <span>480×200</span>
+      </div>
+      <p class="controls-hint" id="too-early-hint" style="display:none;">
+        Button unten benutzen, um zwischen "zu früh" und "richtig initialisiert" zu wechseln.
+      </p>
+      <button id="too-early-btn" class="btn ghost" style="margin-top:8px; display:none;">Später erneut versuchen</button>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../../index.html">← Zur Kapitelübersicht</a>
+  <a href="../chapter-05-airraid/">Weiter: Chapter 05 · Air Raid →</a>
+</div>
+
+<script src="game.js"></script>
+<script>
+  // Zeige den "zu früh"-Button nur im passenden Demo-Kontext
+  document.querySelectorAll('[data-demo]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isTooEarly = btn.dataset.demo === 'tooearly';
+      document.getElementById('too-early-btn').style.display = isTooEarly ? 'inline-block' : 'none';
+      document.getElementById('too-early-hint').style.display = isTooEarly ? 'block' : 'none';
+    });
+  });
+</script>
+</body>
+</html>
