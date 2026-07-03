@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 12 · Racing Game — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 12</div>
+    <span class="readout">CH·12a</span>
+    <h1>Racing Game</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein Top-Down-Rennspiel: lenken, beschleunigen, auf der Straße bleiben
+      (abseits wird man langsamer), eine volle Runde über drei Wegpunkte
+      fahren. Original: <code>A3GPU212_RacingGame</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>hitTestPoint() gegen eine Grafik → isPointInPath() gegen einen Vektorpfad</h2>
+      <p>
+        Der interessanteste Portierungs-Schritt in diesem Kapitel: Das
+        Original prüft mit <code>road.hitTestPoint(x, y, true)</code>
+        pixelgenau, ob eine Koordinate auf der (im Flash-Editor gezeichneten)
+        Straßengrafik liegt. Canvas hat keinen Pixel-Treffertest eingebaut —
+        der nächste Verwandte ist <code>ctx.isPointInPath(path, x, y)</code>
+        gegen einen <code>Path2D</code>, den man sich selbst aus der
+        Streckenform baut (hier: äußere minus innere abgerundete Fläche,
+        per <code>evenodd</code>-Füllregel als "Donut").
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>if (!gamesprite.road.hitTestPoint(
+    carPos.x+dx+gamesprite.x,
+    carPos.y+dy+gamesprite.y,
+    true)) {
+  if (gamesprite.side.hitTestPoint(
+      ...)) {
+    speed *= 1.0 - .001*timeDiff;
+  } else {
+    speed *= 1.0 - .005*timeDiff;
+  }
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>if (!ctx.isPointInPath(
+    roadPath, nx, ny, "evenodd")) {
+  if (ctx.isPointInPath(
+      sidePath, nx, ny, "evenodd")) {
+    speed *= 1.0 - .001*timeDiff;
+  } else {
+    speed *= 1.0 - .005*timeDiff;
+  }
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Fahrphysik: unverändert übernommen</h2>
+      <p>
+        Beschleunigung, Bremsen/Rückwärtsgang, natürliches Ausrollen ohne
+        Tastendruck, und die Lenkung (schneller drehen bei höherer
+        Geschwindigkeit — <code>(speed+.1)*turnSpeed*timeDiff</code>) sind
+        1:1 aus dem Original übernommen, inklusive aller Konstanten.
+      </p>
+
+      <h2>Zielankunft: an die eigene Streckenform angepasst</h2>
+      <p>
+        Das Original prüft die Ziellinie mit einem einfachen
+        <code>car.y &lt; finish.y</code> — das setzt eine bestimmte
+        Streckenausrichtung voraus (senkrechte Ziellinie oben). Da unsere
+        Strecke eine Ringform ("Donut") statt einer geraden Strecke ist,
+        wurde <code>checkFinishLine()</code> auf einen Abstandstest zum
+        Startpunkt umgestellt — dasselbe Ziel ("eine volle Runde nach allen
+        Wegpunkten"), nur an die andere Streckenform angepasst.
+      </p>
+
+      <div class="callout">
+        <kbd>↑</kbd>/<kbd>↓</kbd> Gas/Bremse, <kbd>←</kbd>/<kbd>→</kbd> lenken.
+        Drei Wegpunkte anfahren, dann zurück zur Startlinie.
+        Motorsound ist synthetisch erzeugt (Web Audio), da die Original-
+        Sounds nur als Flash-Bibliothekssymbole ohne exportierte Audiodatei
+        vorlagen.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="550" height="400" tabindex="0"></canvas>
+        <div id="countdown"></div>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">3-2-1-Start, eine Runde über drei Wegpunkte.</p>
+          <button id="start-btn" class="btn">Rennen starten</button>
+        </div>
+      </div>
+      <div class="stage-hud">
+        <span id="hud-time">Time: 0:00</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-12-racinggame/game.js</span>
+        <span>550×400</span>
+      </div>
+      <p class="controls-hint"><kbd>↑</kbd> <kbd>↓</kbd> Gas/Bremse · <kbd>←</kbd> <kbd>→</kbd> lenken</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-11-platformgame/">← Chapter 11 · Platform Game</a>
+  <a href="../chapter-12-topdowngame/">Weiter: Chapter 12 · Top-Down Game →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

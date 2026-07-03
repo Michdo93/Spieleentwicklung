@@ -1,0 +1,39 @@
+.game-overlay {
+  position: absolute;
+  inset: 14px;
+  background: rgba(5,7,10,0.9);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  padding: 20px;
+  z-index: 5;
+}
+.game-overlay p {
+  font-family: var(--font-mono);
+  color: var(--amber);
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 32ch;
+}
+.stage-frame { position: relative; }
+
+#countdown {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--amber);
+  text-shadow: 0 0 20px rgba(0,0,0,0.8);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.stage-hud { flex-wrap: wrap; row-gap: 4px; }
+#hud-onboard { font-family: var(--font-mono); font-size: 0.8rem; }
