@@ -1,0 +1,122 @@
+[
+  {
+    "category": "Entertainment",
+    "question": "Who is known as the original drummer of the Beatles?",
+    "answers": [
+      "Pete Best",
+      "Ringo Starr",
+      "Stu Sutcliffe",
+      "George Harrison"
+    ],
+    "hint": "Was fired before the Beatles hit it big.",
+    "fact": "Pete stayed until shortly after their first audition for EMI in 1962, but was fired on August 16th of that year, to be replaced by Ringo Starr."
+  },
+  {
+    "category": "History",
+    "question": "What ship rests in the bottom of Pearl Harbor?",
+    "answers": [
+      "USS Arizona",
+      "USS Iowa",
+      "USS Wisconsin",
+      "USS Kentucky"
+    ],
+    "hint": "Was also the 48th state admitted into the U.S. and the last of the contiguous states admitted.",
+    "fact": "The USS Arizona Memorial, dedicated in 1962, spans the sunken hull of the battleship without touching it. The 19,585 pound anchor of the Arizona is displayed at the entrance of the visitor center."
+  },
+  {
+    "category": "Entertainment",
+    "question": "In what seaside town did Alfred Hitchcock’s 1963 movie “The Birds” take place?",
+    "answers": [
+      "Bodega Bay",
+      "Half moon Bay",
+      "Carmel",
+      "Monterey Bay"
+    ],
+    "hint": "The spanish word for a small grocery store.",
+    "fact": "Located in Sonoma County, California just north of San Francisco it was discovered in 1775 by the Spanish explorer Juan Francisco de la Bodega y Quadra."
+  },
+  {
+    "category": "History",
+    "question": "Who was the principal author of the Declaration of Independence?",
+    "answers": [
+      "Thomas Jefferson",
+      "Abraham Lincoln",
+      "Benjamin Franklin",
+      "John Adams"
+    ],
+    "hint": "Was also our third president",
+    "fact": "The committee decided that Jefferson would write the draft, which he showed to Franklin and Adams. Franklin himself made at least 48 corrections. Jefferson then produced another copy incorporating these changes, and the committee presented this copy to the Continental Congress on June 28, 1776."
+  },
+  {
+    "category": "Sports",
+    "question": "Who was one of the first 5 members elected to the Baseball Hall of Fame?",
+    "answers": [
+      "Babe Ruth",
+      "Hank Aaron",
+      "Jackie Robinson",
+      "Pete Rose"
+    ],
+    "hint": "One of his nicknames was “The Bambino”",
+    "fact": "In 1936 the first five members to elected were Ty Cobb, Babe Ruth, Honus Wagner, Christy Mathewson and Walter Johnson."
+  },
+  {
+    "category": "Geography",
+    "question": "What is the capitol of Costa Rica?",
+    "answers": [
+      "San Jose",
+      "Liberia",
+      "Puntarenas",
+      "Cartago"
+    ],
+    "hint": "Also the name of a California city",
+    "fact": "San Jose was a very small village until 1824. In that year, Costa Rica's first elected head of state, Juan Mora Fernández, decided to move the government of Costa Rica from the old Spanish colonial capital of Cartago and make a fresh start with a new city."
+  },
+  {
+    "category": "Grab Bag",
+    "question": "What system is used in libraries to catalog their books?",
+    "answers": [
+      "Dewey Decimal System",
+      "Library of Congress Classification",
+      "Universal Decimal Classification",
+      "International Standard Book Number"
+    ],
+    "hint": "One of Donald Duck’s Nephews",
+    "fact": "Developed by Melvil Dewey in 1876, and since greatly modified and expanded in the course of the twenty-two major revisions, the most recent in 2004."
+  },
+  {
+    "category": "Science",
+    "question": "Who won the 1921 Nobel Prize for Physics?",
+    "answers": [
+      "Albert Einstein",
+      "Robert A. Millikan",
+      "Niels Bohr",
+      "Charles Edouard Guillaume"
+    ],
+    "hint": "E=mc2",
+    "fact": "The Federal Bureau of Investigation had a file containing 1,427 pages about Albert Einstein."
+  },
+  {
+    "category": "History",
+    "question": "From 1948-1964 Benjamin Franklin's face was on this U.S. coin. How much was it worth?",
+    "answers": [
+      "Half dollar or 50 cents",
+      "Dollar",
+      "Quarter",
+      "Dime"
+    ],
+    "hint": "There's a rapper by the same name.",
+    "fact": "Benjamin Franklin is credited with inventing the Franklin stove, lightning rod, and bifocals. The city of Philadelphia owns 5000 likenesses of him."
+  },
+  {
+    "category": "Geography",
+    "question": "Vancouver is located in what Canadian Province north of Washington state?",
+    "answers": [
+      "British Columbia",
+      "Saskatchewan",
+      "Alberta",
+      "Manitoba"
+    ],
+    "hint": "Not to be mistaken with England",
+    "fact": "The 2010 Winter Olympics will be held in Vancouver and nearby Whistler."
+  }
+]

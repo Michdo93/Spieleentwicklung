@@ -62,7 +62,7 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 | 07 | Air Raid 2 / Balloon Pop / Rotation Math / Space Rocks | ✅ portiert |
 | 08 | Collapsing Blocks / Match Three / Point Burst | ✅ portiert |
 | 09 | Hangman / Text Examples / Word Search | ✅ portiert |
-| 10 | Trivia (3×) / XML Examples | ⏳ geplant |
+| 10 | Trivia (3×) / XML Examples | ✅ portiert |
 | 11 | Platform Game | ⏳ geplant |
 | 12 | Racing Game / Top-Down Game | ⏳ geplant |
 | 13 | Blackjack / Higher or Lower / Video Poker | ⏳ geplant |

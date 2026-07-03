@@ -1,0 +1,95 @@
+.quiz-frame {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  min-height: 320px;
+}
+
+.quiz-message {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  min-height: 1.4em;
+  color: var(--text);
+}
+.quiz-message.good { color: var(--teal); }
+.quiz-message.bad { color: var(--red); }
+
+.quiz-score {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--amber);
+  margin-bottom: 18px;
+}
+
+.quiz-question {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+
+.quiz-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-answer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: var(--bg-raised-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.quiz-answer:hover:not(:disabled) {
+  border-color: var(--amber-dim);
+}
+.quiz-answer:disabled { cursor: default; }
+.quiz-answer.correct {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.quiz-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+
+#action-btn { margin-top: 18px; }
+
+.quiz-answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.quiz-image {
+  width: 70px;
+  margin: 4px auto;
+}
+.quiz-image svg { width: 100%; height: auto; display: block; }
+.quiz-question .quiz-image { width: 100px; margin: 10px auto; }
+.quiz-answers-grid .quiz-answer:has(.quiz-image) {
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}

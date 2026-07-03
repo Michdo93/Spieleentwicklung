@@ -1,0 +1,20 @@
+[
+  {
+    "question": "Which planet is closest to the sun?",
+    "answers": [
+      "Mercury",
+      "Venus",
+      "Mars",
+      "Saturn"
+    ]
+  },
+  {
+    "question": "Which of these planets does not have rings?",
+    "answers": [
+      "Venus",
+      "Neptune",
+      "Saturn",
+      "Jupiter"
+    ]
+  }
+]

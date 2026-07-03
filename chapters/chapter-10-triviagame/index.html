@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 10 · Trivia Game — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 10</div>
+    <span class="readout">CH·10b</span>
+    <h1>Trivia Game</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein Multiple-Choice-Quiz aus 10 Fragen, geladen aus externen Daten,
+      Antworten gemischt, laufender Punktestand. Original:
+      <code>A3GPU210_TriviaGame</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Canvas oder DOM? Hier eindeutig DOM.</h2>
+      <p>
+        Alle bisherigen Spiele in diesem Repo liefen über
+        <code>&lt;canvas&gt;</code>, weil sie Bewegung, Kollision oder freie
+        Zeichnung brauchten. Ein Quiz ist im Kern ein <strong>Formular</strong>:
+        Text, Buttons, Listen. Dafür ist echtes HTML die bessere Wahl —
+        Textumbruch, Barrierefreiheit und Styling funktionieren "geschenkt",
+        ganz ohne selbst geschriebene Layout-Logik. AS3s
+        <code>createText()</code>-Hilfsfunktion (die für jedes Textfeld
+        manuell Format, Zeilenumbruch und Größe setzt) entfällt komplett —
+        das übernimmt CSS.
+      </p>
+
+      <h2>Antworten mischen: derselbe Algorithmus</h2>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>function shuffleAnswers(
+    answers:XMLList) {
+  var shuffled = [];
+  while (answers.child("*")
+      .length() &gt; 0) {
+    var r = Math.floor(
+      Math.random()*answers
+      .child("*").length());
+    shuffled.push(
+      answers.answer[r]);
+    delete answers.answer[r];
+  }
+  return shuffled;
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>function shuffleAnswers(
+    originalAnswers) {
+  const pool = [...originalAnswers];
+  const shuffled = [];
+  while (pool.length &gt; 0) {
+    const r = Math.floor(
+      Math.random()*pool.length);
+    shuffled.push(pool[r]);
+    pool.splice(r, 1);
+  }
+  return shuffled;
+}</code></pre>
+        </div>
+      </div>
+      <p>
+        Erste Antwort in den Originaldaten ist immer die richtige
+        (<code>correctAnswer = item.answers[0]</code>) — die Mischfunktion
+        zieht zufällig Elemente heraus, bis alle in neuer Reihenfolge in
+        einem neuen Array stehen. Exakt dasselbe Prinzip in beiden Sprachen.
+      </p>
+
+      <h2>Ablauf bleibt 1:1</h2>
+      <p>
+        Frage anzeigen → Antwort anklicken → richtige/falsche Antwort
+        markieren, alle anderen ausblenden → "Continue"-Button → nächste
+        Frage, bis alle 10 durch sind. Genau der Ablauf aus
+        <code>pressedGameButton()</code>/<code>finishQuestion()</code> im
+        Original.
+      </p>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="quiz-frame">
+        <p id="score" class="quiz-score"></p>
+        <p id="message" class="quiz-message"></p>
+        <div id="question-card"></div>
+        <button id="action-btn" class="btn" style="display:none;"></button>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-10-triviagame/game.js</span>
+        <span>10 Fragen aus assets/trivia1.json</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-10-xmlexamples/">← Chapter 10 · XML Examples</a>
+  <a href="../chapter-10-triviagamedeluxe/">Weiter: Chapter 10 · Trivia Game Deluxe →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 10 · Trivia Game Deluxe — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 10</div>
+    <span class="readout">CH·10c</span>
+    <h1>Trivia Game Deluxe</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Dasselbe Quiz-Grundgerüst wie Chapter 10b, jetzt mit Zeitdruck: 25
+      Sekunden pro Frage, Punkte sinken mit der Zeit, ein Hinweis-Button
+      kostet Punkte, ein Faktum nach jeder Antwort. Original:
+      <code>A3GPU210_TriviaGameDeluxe</code>.
+      <br>⚠️ Braucht wie <a href="../chapter-10-xmlexamples/">Chapter 10a</a> einen lokalen Server.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>10 aus 42: zufällige Teilmenge ziehen</h2>
+      <p>
+        Der Fragenpool (<code>trivia2.json</code>, aus <code>trivia2.xml</code>
+        konvertiert) enthält 42 Fragen — jede Runde werden per Zufall nur 10
+        davon ausgewählt. Derselbe "ziehen und aus dem Pool entfernen"-Trick
+        wie beim Antworten-Mischen, nur auf Fragen statt Antworten angewendet.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>var chosenXML = &lt;trivia&gt;&lt;/trivia&gt;;
+while (chosenXML.child("*")
+    .length() &lt; numToChoose) {
+  var r = Math.floor(
+    Math.random()*allXML
+    .child("*").length());
+  chosenXML.appendChild(
+    allXML.item[r].copy());
+  delete allXML.item[r];
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>function selectQuestions(
+    all, numToChoose) {
+  const copy = [...all];
+  const chosen = [];
+  while (chosen.length &lt; numToChoose
+      &amp;&amp; copy.length &gt; 0) {
+    const r = Math.floor(
+      Math.random()*copy.length);
+    chosen.push(copy[r]);
+    copy.splice(r, 1);
+  }
+  return chosen;
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Countdown mit sinkenden Punkten</h2>
+      <p>
+        25 Sekunden Zeit, jede Sekunde kostet 25 Punkte vom möglichen
+        Maximum (1000). Das Original nutzt einen <code>Timer(1000,25)</code>
+        mit einer <code>Clock</code>-Bibliotheksanimation; hier übernimmt ein
+        <code>setInterval(fn, 1000)</code> die Zählung, ein CSS-
+        <code>width</code>-Übergang die visuelle Fortschrittsleiste.
+      </p>
+
+      <h2>Hint-Button: Punkte gegen Information tauschen</h2>
+      <p>
+        Ein Hinweis kostet 300 Punkte sofort — eine kleine Risikoabwägung für
+        den Spieler. Genau wie im Original bleibt der Button nur verfügbar,
+        solange noch nicht geantwortet wurde.
+      </p>
+
+      <div class="callout">
+        Jede Runde 10 zufällige von 42 Fragen, 25 Sekunden Zeit, Hinweis
+        kostet Punkte, nach jeder Antwort ein kurzes Faktum zum Thema.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="quiz-frame">
+        <p id="score" class="quiz-score"></p>
+        <div class="timer-track"><span id="timer-bar"></span></div>
+        <p id="message" class="quiz-message"></p>
+        <div id="question-card"></div>
+        <p id="fact" class="quiz-fact"></p>
+        <button id="action-btn" class="btn" style="display:none;"></button>
+        <button id="hint-btn" class="btn ghost hint-btn" style="display:none;">Hint (−300)</button>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-10-triviagamedeluxe/game.js</span>
+        <span>10 von 42 Fragen aus assets/trivia2.json</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-10-triviagame/">← Chapter 10 · Trivia Game</a>
+  <a href="../chapter-10-picturetriviagame/">Weiter: Chapter 10 · Picture Trivia →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

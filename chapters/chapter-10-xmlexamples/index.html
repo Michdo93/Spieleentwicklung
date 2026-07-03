@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 10 · XML Examples — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 10</div>
+    <span class="readout">CH·10a</span>
+    <h1>XML Examples</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Der Grundbaustein für alle drei Trivia-Spiele in diesem Kapitel: externe
+      Frage-Daten laden. AS3 benutzt dafür XML, im Web ist JSON die
+      naheliegende Wahl. Original: <code>A3GPU210_XMLExamples</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>URLLoader + XML → fetch() + JSON</h2>
+      <p>
+        AS3 lädt externe Daten asynchron über <code>URLLoader</code>, hört auf
+        <code>Event.COMPLETE</code>, und parst dann mit <code>XML(event.target.data)</code>.
+        Im Web übernimmt <code>fetch()</code> beides in einem Aufruf — Netzwerk-
+        Request und Parsing sind durch <code>await response.json()</code>
+        bereits kombiniert.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>var loader = new URLLoader(
+  new URLRequest(
+    "xmltestdata.xml"));
+loader.addEventListener(
+  Event.COMPLETE, xmlLoaded);
+loader.addEventListener(
+  IOErrorEvent.IO_ERROR,
+  xmlLoadError);
+
+function xmlLoaded(e) {
+  var xmldata = XML(e.target.data);
+  trace(xmldata.item.answers
+    .answer[1]);
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>try {
+  const response = await fetch(
+    "xmltestdata.json");
+  const data = await response.json();
+  console.log(
+    data[0].answers[1]);
+} catch (err) {
+  console.log(
+    "Fehler:", err.message);
+}</code></pre>
+        </div>
+      </div>
+
+      <h2>Warum JSON statt XML im Browser?</h2>
+      <p>
+        Beides würde im Browser funktionieren (<code>DOMParser</code> kann
+        XML parsen), aber JSON ist die native Datenstruktur von JavaScript —
+        kein Parsing-Schritt, kein Umweg über <code>XMLList</code>-Zugriffe
+        wie <code>item.answers.answer[0]</code>. Die Original-Fragedaten
+        wurden 1:1 nach JSON konvertiert, inhaltlich unverändert.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">XML (Original)</span>
+          <pre><code>&lt;trivia&gt;
+  &lt;item&gt;
+    &lt;question&gt;
+      Which planet is closest
+      to the sun?
+    &lt;/question&gt;
+    &lt;answers&gt;
+      &lt;answer&gt;Mercury&lt;/answer&gt;
+      &lt;answer&gt;Venus&lt;/answer&gt;
+      ...
+    &lt;/answers&gt;
+  &lt;/item&gt;
+&lt;/trivia&gt;</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JSON (portiert)</span>
+          <pre><code>[
+  {
+    "question": "Which planet
+      is closest to the sun?",
+    "answers": [
+      "Mercury", "Venus", ...
+    ]
+  }
+]</code></pre>
+        </div>
+      </div>
+
+      <div class="callout">
+        Diese Umstellung (XML → JSON, <code>URLLoader</code> → <code>fetch()</code>)
+        ist die Grundlage für alle drei folgenden Trivia-Spiele in diesem
+        Kapitel.
+      </div>
+      <div class="callout">
+        <strong>Achtung, Browser-Eigenheit:</strong> <code>fetch()</code> lädt
+        lokale Dateien nicht, wenn die Seite direkt per <code>file://</code>
+        geöffnet wird (CORS-Sperre für lokale Requests in Chrome/Edge).
+        Ab diesem Kapitel lokal am besten mit
+        <code>python3 -m http.server</code> im Repo-Ordner testen und dann
+        <code>http://localhost:8000</code> öffnen — auf GitHub Pages
+        funktioniert es ohnehin automatisch, weil dort alles über
+        <code>https://</code> ausgeliefert wird.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div id="output" class="output-panel"></div>
+      <div id="questions"></div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-09-wordsearch/">← Chapter 09 · Word Search</a>
+  <a href="../chapter-10-triviagame/">Weiter: Chapter 10 · Trivia Game →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

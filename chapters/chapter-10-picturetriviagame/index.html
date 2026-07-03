@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 10 · Picture Trivia Game — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 10</div>
+    <span class="readout">CH·10d</span>
+    <h1>Picture Trivia Game</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Ein Quiz, bei dem Frage <em>oder</em> Antworten auch Bilder statt Text
+      sein können — gemischt in derselben Datenstruktur. Original:
+      <code>A3GPU210_PictureTriviaGame</code>.
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Gemischte Typen: <code>type="text"</code> vs. <code>type="file"</code></h2>
+      <p>
+        Der Clou im Original: jede Frage und jede Antwort trägt ein
+        <code>type</code>-Attribut. Ist es <code>"text"</code>, wird ein
+        Textfeld erzeugt; ist es <code>"file"</code>, lädt ein
+        <code>Loader</code> stattdessen eine externe SWF-Bilddatei nach.
+        Dieselbe Fallunterscheidung steckt hier im JS-Code — nur dass aus
+        <code>"file"</code> <code>"image"</code> wurde und statt eines
+        <code>Loader</code>-Objekts direkt Inline-SVG eingesetzt wird.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>if (question.@type == "text") {
+  questionField = createText(
+    question, ...);
+} else {
+  var loader = new Loader();
+  loader.load(new URLRequest(
+    "triviaimages/"+question));
+  questionSprite.addChild(loader);
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>qEl.innerHTML =
+  item.question.type === "text"
+    ? item.question.value
+    : imageHTML(item.question.value);</code></pre>
+        </div>
+      </div>
+
+      <h2>Bilder: selbst gezeichnet statt Originaldateien</h2>
+      <p>
+        Die Original-Bilder lagen als kompilierte <code>.swf</code>-Dateien
+        vor (<code>equilateral.swf</code>, <code>right.swf</code>,
+        <code>isosceles.swf</code>, <code>scalene.swf</code>, <code>italy.swf</code>)
+        — ein Format, das kein Browser mehr abspielen kann und aus dem sich
+        keine Bilddaten extrahieren lassen. Da für dieses Kapitel also
+        wirklich keine verwendbare Originaldatei vorlag, habe ich fünf
+        kleine Ersatzgrafiken selbst als Inline-SVG gezeichnet: vier klar
+        unterscheidbare Dreiecksarten und eine stark vereinfachte,
+        stilisierte Silhouette Italiens.
+      </p>
+
+      <h2>Kein Server nötig</h2>
+      <p>
+        Anders als die beiden vorigen Trivia-Kapitel lädt dieses hier keine
+        externe JSON-Datei — die drei Fragen stecken direkt im Skript. Das
+        spart den lokalen Server, den <code>fetch()</code>-basierte Seiten
+        sonst brauchen (siehe <a href="../chapter-10-xmlexamples/">Chapter 10a</a>).
+      </p>
+
+      <div class="callout">
+        Die Antwortstruktur bleibt identisch zu Chapter 10b/10c — nur womit
+        eine Antwort dargestellt wird (Text oder Bild), ändert sich pro Frage.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="quiz-frame">
+        <p id="score" class="quiz-score"></p>
+        <p id="message" class="quiz-message"></p>
+        <div id="question-card"></div>
+        <button id="action-btn" class="btn" style="display:none;"></button>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-10-picturetriviagame/game.js</span>
+        <span>3 Fragen, gemischte Text-/Bildtypen</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-10-triviagamedeluxe/">← Chapter 10 · Trivia Game Deluxe</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

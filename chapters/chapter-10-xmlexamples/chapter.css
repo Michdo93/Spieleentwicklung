@@ -1,0 +1,39 @@
+.output-panel {
+  background: #05070a;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--teal);
+  white-space: pre-wrap;
+  margin-bottom: 16px;
+}
+.output-panel::before {
+  content: "▸ Ausgabe (trace)";
+  display: block;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.xml-item {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.xml-q {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.xml-item ul {
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
