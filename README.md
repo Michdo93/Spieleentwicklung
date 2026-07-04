@@ -10,7 +10,7 @@ Stück für Stück beibringen kann — und nebenbei sieht, wie sich dieselben
 Konzepte (Bewegung, Kollision, Zustände, Ein-/Ausgabe) von einer
 2011er-Flash-Codebasis auf moderne Web-Technik übertragen.
 
-▶ **[Alle Kapitel ansehen](./index.html)**
+▶ **[Alle Kapitel ansehen](./index.html)** — 🎉 **alle 36 Projekte aus dem Buch sind vollständig portiert.**
 
 ## Wie das Repo aufgebaut ist
 
@@ -57,7 +57,7 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 | 03 | Matching Game | ✅ portiert |
 | 04 | Deduction / Memory Game | ✅ portiert |
 | 05 | Air Raid | ✅ portiert |
-| 05 | Animation / Paddle Ball | ⏳ geplant |
+| 05 | Animation / Paddle Ball | ✅ portiert |
 | 06 | Bitmap / Jigsaw / Sliding Puzzle | ✅ portiert |
 | 07 | Air Raid 2 / Balloon Pop / Rotation Math / Space Rocks | ✅ portiert |
 | 08 | Collapsing Blocks / Match Three / Point Burst | ✅ portiert |
@@ -67,7 +67,7 @@ Der exakte Original-Ordnername steht trotzdem in jeder `README.md`.
 | 12 | Racing Game / Top-Down Game | ✅ portiert |
 | 13 | Blackjack / Higher or Lower / Video Poker | ✅ portiert |
 | 14 | 3D-Demos / Dungeon 3D / Racing 3D / Target Practice | ✅ portiert |
-| 15 | Apps | ⏳ geplant |
+| 15 | Apps | ✅ portiert |
 
 Der aktuelle Stand steht auch live oben auf der [Übersichtsseite](./index.html)
 (Fortschrittsbalken, automatisch aus `assets/js/chapters-data.js` berechnet).

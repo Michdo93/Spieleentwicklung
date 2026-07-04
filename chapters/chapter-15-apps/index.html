@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 15 · Apps — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 15</div>
+    <span class="readout">CH·15</span>
+    <h1>Apps</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Das letzte Buchkapitel: aus einer Spiele-Demo eine installierbare App
+      machen. Original: <code>A3GPU215_Apps</code> (MarbleMaze,
+      iSlidingPuzzle — beides Adobe-AIR-Pakete mit App-Icons und
+      Manifest-Datei).
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Zwei Projekte, eine Lektion</h2>
+      <p>
+        <code>iSlidingPuzzle</code> ist inhaltlich dasselbe Spiel wie
+        <a href="../chapter-06-sliding-puzzle/">Chapter 06 · Sliding Puzzle</a> —
+        hier ging es dem Buch nicht um neue Spiellogik, sondern ums
+        <strong>Verpacken</strong>: App-Icons in mehreren Größen,
+        eine <code>-app.xml</code>-Manifestdatei, Touch statt Maus.
+        <code>MarbleMaze</code> ist das einzige inhaltlich neue Spiel — und
+        das einzige, das wirklich einen Sensor braucht, den es auf dem
+        Desktop nicht gibt. Deshalb liegt der Fokus dieser Kapitelseite auf
+        Marble Maze plus einer Erklärung, wie sich das AIR-Verpackungsprinzip
+        auf eine Web-App überträgt.
+      </p>
+
+      <h2>Sensor mit Fallback: dasselbe Muster wie im Original</h2>
+      <p>
+        <code>MarbleMaze.as</code> prüft <code>Accelerometer.isSupported</code>
+        und benutzt auf dem Desktop stattdessen die Pfeiltasten — Adobe AIR
+        lief schließlich auch auf Windows/Mac-Rechnern ohne Sensor. Genau
+        dasselbe Muster gibt es im Web: die <code>DeviceOrientation</code>-API
+        auf Mobilgeräten (auf iOS erst nach expliziter Nutzer-Bestätigung
+        per Tap), Pfeiltasten als Fallback überall sonst.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3 / AIR</span>
+          <pre><code>if (Accelerometer.isSupported) {
+  accelerometer = new Accelerometer();
+  accelerometer.addEventListener(
+    AccelerometerEvent.UPDATE,
+    accelerometerHandler);
+} else {
+  stage.addEventListener(
+    KeyboardEvent.KEY_DOWN,
+    keyDownFunction);
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript / Web</span>
+          <pre><code>if (window.DeviceOrientationEvent
+    &amp;&amp; matchMedia(
+      "(pointer:coarse)").matches) {
+  window.addEventListener(
+    "deviceorientation",
+    e =&gt; this.onTilt(e));
+} else {
+  window.addEventListener(
+    "keydown",
+    e =&gt; this.keyDown(e));
+}</code></pre>
+        </div>
+      </div>
+      <p>
+        Ein Unterschied bleibt: iOS verlangt seit iOS 13 eine explizite
+        Nutzerfreigabe für Bewegungssensoren
+        (<code>DeviceOrientationEvent.requestPermission()</code>), auslösbar
+        nur durch eine echte Nutzeraktion wie einen Tap — deshalb der
+        "Neigen aktivieren"-Button unten, den es im Original nicht brauchte.
+      </p>
+
+      <h2>AIR-Verpackung → PWA-Manifest</h2>
+      <p>
+        <code>MarbleMaze-app.xml</code> beschrieb App-Name, Version, Icons
+        und Berechtigungen für Adobe AIR. Die direkte Web-Entsprechung ist
+        eine <code>manifest.json</code> — dasselbe Grundprinzip
+        (Metadaten + Icon-Set, die den Browser "installierbar machen"),
+        nur JSON statt XML:
+      </p>
+      <pre><code>{
+  "name": "Marble Maze",
+  "short_name": "MarbleMaze",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#141a22",
+  "theme_color": "#5fe0c9",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}</code></pre>
+      <p>
+        Mit dieser Datei (verlinkt per <code>&lt;link rel="manifest"&gt;</code>)
+        und einer HTTPS-Auslieferung — beides bei GitHub Pages automatisch
+        gegeben — bietet der Browser "Zum Startbildschirm hinzufügen" an,
+        genau wie ein AIR-Installer eine native App installierte. Für echte
+        Offline-Fähigkeit käme zusätzlich ein Service Worker dazu — eine
+        eigene, größere Technik, die den Rahmen dieses Buch-Ports sprengt,
+        aber der letzte logische Schritt wäre.
+      </p>
+
+      <div class="callout">
+        Neigen (oder Pfeiltasten) benutzen, um die Kugel vom oberen linken
+        Eck zum Ziel unten rechts zu rollen, ohne an den Wänden hängen zu
+        bleiben.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="340" height="420" tabindex="0"></canvas>
+        <div id="overlay" class="game-overlay">
+          <p id="overlay-text">Kugel zum Ziel rollen — neigen oder Pfeiltasten.</p>
+          <button id="start-btn" class="btn">Labyrinth starten</button>
+        </div>
+      </div>
+      <button id="tilt-btn" class="btn ghost">Neigen aktivieren (iOS)</button>
+      <div class="stage-hud">
+        <span id="hud-mode">Steuerung: Pfeiltasten</span>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-15-apps/game.js</span>
+        <span>340×420</span>
+      </div>
+      <p class="controls-hint">Pfeiltasten oder Gerät neigen (Mobilgerät).</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-14-targetpractice/">← Chapter 14 · Target Practice</a>
+  <a href="../../index.html">Zur Kapitelübersicht →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

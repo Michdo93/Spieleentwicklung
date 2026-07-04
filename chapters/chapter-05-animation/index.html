@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 05 · Animation — AS3 → HTML5 Game Dev Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="chapter.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand"><span class="dot">&gt;</span> game-dev-lab <small>AS3 → HTML5 Portierung</small></div>
+    <nav class="site-nav">
+      <a href="../../index.html">Alle Kapitel</a>
+      <a href="https://github.com/Michdo93" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="chapter-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../../index.html">Kapitel</a> / Kapitel 05</div>
+    <span class="readout">CH·05b</span>
+    <h1>Animation</h1>
+    <p class="lede" style="color:var(--text-dim); max-width:70ch;">
+      Das denkbar einfachste Bewegungsbeispiel: 50 Objekte, jedes mit
+      eigener konstanter Geschwindigkeit. Original:
+      <code>A3GPU205_Animation</code> (AnimatedObject, AnimationTest).
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="learn-grid">
+
+    <div class="learn-col">
+      <h2>Jedes Objekt bewegt sich selbst</h2>
+      <p>
+        <code>AnimatedObject</code> ist eine eigenständige Klasse mit
+        eigenem <code>ENTER_FRAME</code>-Listener — jedes der 50 Objekte
+        aktualisiert seine Position unabhängig von allen anderen. Dasselbe
+        Muster (Objekt kennt seine eigene Geschwindigkeit, aktualisiert sich
+        selbst über <code>update(dt)</code>) taucht im ganzen restlichen
+        Buch wieder auf, von Air Raids Flugzeugen bis zu Space Rocks'
+        Asteroiden.
+      </p>
+      <div class="compare">
+        <div class="col old">
+          <span class="tag">ActionScript 3</span>
+          <pre><code>public function moveObject(
+    event:Event) {
+  var timePassed:int =
+    getTimer() - lastTime;
+  lastTime += timePassed;
+  this.x +=
+    speedX*timePassed/1000;
+  this.y +=
+    speedY*timePassed/1000;
+}</code></pre>
+        </div>
+        <div class="col new">
+          <span class="tag">JavaScript</span>
+          <pre><code>update(dt) {
+  // dt bereits in Sekunden
+  this.x += this.speedX * dt;
+  this.y += this.speedY * dt;
+}</code></pre>
+        </div>
+      </div>
+      <p>
+        Kleiner, aber praktischer Unterschied: AS3 misst in Millisekunden
+        und teilt am Ende durch 1000, um auf "Pixel pro Sekunde" zu kommen.
+        Im JS-Game-Loop wird <code>dt</code> gleich in Sekunden berechnet
+        (<code>(now - lastTime) / 1000</code>), das Teilen entfällt.
+      </p>
+
+      <h2>Kleine Ergänzung: Objekte tauchen wieder auf</h2>
+      <p>
+        Das Original lässt Objekte einfach von der Bühne verschwinden, wenn
+        sie den sichtbaren Bereich verlassen — nach ein paar Sekunden wäre
+        die Demo leer. Hier tauchen sie stattdessen am gegenüberliegenden
+        Rand wieder auf, damit die Demo dauerhaft interessant bleibt. Eine
+        bewusste kleine Ergänzung, keine Notwendigkeit der Portierung.
+      </p>
+
+      <div class="callout">
+        Reine Beobachtungs-Demo, keine Steuerung nötig — 50 Objekte, die
+        unabhängig voneinander mit konstanter Geschwindigkeit driften.
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage-frame">
+        <canvas id="stage" width="480" height="320"></canvas>
+      </div>
+      <div class="stage-caption">
+        <span>chapter-05-animation/game.js</span>
+        <span>480×320</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="chapter-footer-nav wrap">
+  <a href="../chapter-05-airraid/">← Chapter 05 · Air Raid</a>
+  <a href="../chapter-05-paddleball/">Weiter: Chapter 05 · Paddle Ball →</a>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

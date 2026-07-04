@@ -34,10 +34,10 @@ const CHAPTERS = [
     status: "live" },
   { book: 5, slug: "chapter-05-animation", title: "Animation", original: "A3GPU205_Animation",
     desc: "ENTER_FRAME-Animation, Frame-Timing, einfache Bewegungsmuster.",
-    status: "planned" },
+    status: "live" },
   { book: 5, slug: "chapter-05-paddleball", title: "Paddle Ball", original: "A3GPU205_PaddleBall",
-    desc: "Pong-artige Physik: Ball-Reflektion, Paddle-Steuerung.",
-    status: "planned" },
+    desc: "Breakout-Klon: Ball-Reflektion mit variablem Winkel, Ziegel.",
+    status: "live" },
   { book: 6, slug: "chapter-06-bitmap", title: "Bitmap", original: "A3GPU206_Bitmap",
     desc: "Arbeiten mit Bitmap/BitmapData statt Vektorgrafik.",
     status: "live" },
@@ -120,8 +120,8 @@ const CHAPTERS = [
     desc: "Pseudo-3D-Schießstand als Übung zu Tiefenwirkung.",
     status: "live" },
   { book: 15, slug: "chapter-15-apps", title: "Apps", original: "A3GPU215_Apps",
-    desc: "Von der Spiele-Demo zur eigenständigen App (Icons, Packaging-Gedanke → PWA).",
-    status: "planned" },
+    desc: "Von der Spiele-Demo zur eigenständigen App: Sensor-Fallback, AIR-Manifest → PWA-Manifest.",
+    status: "live" },
 ];
 
 const BOOK_TITLES = {
